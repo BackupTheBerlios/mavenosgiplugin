@@ -308,7 +308,7 @@ public class Bundle
     		
     	} else {
     		    		
-    		BufferedReader breader = new BufferedReader(new FileReader(new File("project.xml")));
+    		BufferedReader breader = new BufferedReader(new FileReader(new File(bundledir + File.separatorChar + ".." + File.separatorChar + "project.xml")));
     		
     		String line = breader.readLine();
     		
@@ -372,8 +372,8 @@ public class Bundle
     	buf.append("</bundle>");
     	
     	// Debug output:
-    	// System.out.println("OBR:");
-    	// System.out.println(buf.toString());
+    	System.out.println("OBR:");
+    	System.out.println(buf.toString());
     	
     	File obrfile = new File(bundledir + File.separatorChar + bname + "-"
                 + bversion + ".obr");
