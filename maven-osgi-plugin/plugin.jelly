@@ -272,6 +272,306 @@
 
   </goal>
 	
+  <!--==================================================================-->
+  <!-- Build eclipse plugin                                             -->
+  <!--==================================================================-->
+	<j:set var="plugin_id"  value="${pom.getProperty('eclipse.bundle.symbolicname')}"/>
+	<j:set var="plugin_name"  value="${plugin_id}_${pom.currentVersion}"/>
+	<j:set var="plugin_name_dir"  value="${maven.build.dir}/${tmp.dir}/${plugin_name}"/>
+	
+	<goal name="eclipse:plugin">
+		
+		<attainGoal name="osgi:install"/>
+		
+		<ant:mkdir dir="${maven.build.dir}/${tmp.dir}"/>
+		<ant:mkdir dir="${maven.build.dir}/${tmp.dir}/${plugin_name}"/>
+		<ant:mkdir dir="${maven.build.dir}/${tmp.dir}/${plugin_name}/META-INF"/>
+		
+		<!-- copy jar file into plugin.name dir -->
+		<ant:copy 
+			file="${maven.build.dir}/${pom.artifactId}-${pom.currentVersion}.jar"
+			tofile="${plugin_name_dir}/${pom.artifactId}.jar" />
+		
+		<attainGoal name="eclipse:manifest"/>
+		
+		<!--
+		<ant:copy 
+			file="${basedir}/eplugin/MANIFEST.MF"
+			tofile="${plugin.name.dir}/META-INF/MANIFEST.MF" />
+		-->
+		<!-- take out the manifest the project-osgi.jar 
+		<ant:unzip 
+			src="${maven.build.dir}/${pom.artifactId}-${pom.currentVersion}.jar"
+			dest="${plugin.name.dir}" >
+			
+			<ant:patternset>
+				<include name="**/MANIFEST.MF"/>
+			</ant:patternset>
+		</ant:unzip>-->
+			
+
+		<j:forEach items="${pom.dependencies}" var="dep"> 
+		
+			<j:set var="plugin_include"  value="${dep.getProperty('eclipse.plugin.include')}"/>
+         	<j:if test="${plugin_include == 'true'}">
+				<ant:echo>include dep: ${pom.getDependencyPath(dep.getId())}</ant:echo>
+				<ant:copy 
+		       		file="${pom.getDependencyPath(dep.getId())}"
+		       		tofile="${plugin_name_dir}/${dep.getArtifactId()}.jar"/>
+			</j:if>
+            
+       	</j:forEach>
+       
+		<!-- copy plugin.xml into plugin.name dir -->
+		<!--
+		<ant:copy todir="${plugin_name_dir}">
+			<ant:fileset dir="${basedir}/eplugin" 
+				includes=".classpath,.project"/>
+		</ant:copy>
+		-->
+		
+		<!-- Licences 
+		<ant:copy todir="${maven.build.dir}/${plugin.name}">
+			<ant:fileset dir="${licences.dir}" />
+		</ant:copy>
+		-->
+    	
+    	<!-- generate the minimal distribution -->
+		<ant:zip
+      		destfile="${maven.build.dir}/${plugin_name}.zip"
+      		basedir="${maven.build.dir}/${tmp.dir}/${plugin_name}"
+    	/>
+		
+		<!-- deloy zip to local repository eclipse-plugin directory -->
+		<attainGoal name="eclipse:plugin-install" />
+		
+		<!--<ant:delete dir="${maven.build.dir}/${tmp.dir}"/>-->
+		
+	</goal>
+  
+  
+  <goal name="eclipse:plugin-install">
+  	<ant:mkdir dir="${maven.repo.local}/${pom.getGroupId()}/eclipse-plugins" />
+
+	<!-- copy zip -->
+	<ant:copy 
+		file="${maven.build.dir}/${plugin_name}.zip"
+		tofile="${maven.repo.local}/${pom.getGroupId()}/eclipse-plugins/${plugin_name}.zip" />
+  	<!-- copy directory for later import -->
+  	<ant:copy todir="${maven.repo.local}/${pom.getGroupId()}/eclipse-plugins/${plugin_name}">
+			<ant:fileset dir="${maven.build.dir}/${tmp.dir}/${plugin_name}" 
+				includes="**"/>
+	</ant:copy>
+  	
+  </goal>
+  
+  	<goal name="eclipse:manifest">
+
+		<ant:manifest file="${plugin_name_dir}/META-INF/MANIFEST.MF">
+        <ant:attribute name="Built-By" value="${user.name}"/>
+        <ant:attribute name="Created-By" value="Apache Jakarta Maven"/>
+        <!--<ant:attribute name="Package" value="${pom.package}"/>-->
+           	
+
+      	<!--==================================================-->
+      	<!-- generate bundle-classpath attribute              -->
+      	<!--==================================================-->
+      	<j:set var="bundle_classpath"  value="${pom.artifactId}.jar"/>
+		<j:forEach items="${pom.dependencies}" var="dep"> 
+		
+			<j:set var="plugin_include"  value="${dep.getProperty('eclipse.plugin.include')}"/>
+         	<j:if test="${plugin_include == 'true'}">
+				<j:set var="bundle_classpath"  
+					value="${bundle_classpath},${dep.getArtifactId()}.jar"/>
+			</j:if>
+            
+       	</j:forEach>
+       	
+      	<!--==================================================-->
+      	<!-- OSGi-Extensions related to the standard manifest -->
+      	<!--==================================================-->
+      	<!-- osgie.manifest.mainclass -->
+      	<!--
+      	<j:if test="${pom.getProperty('osgie.manifest.mainclass')!=null}">
+      		<ant:attribute name = "Main-Class"      value = "${pom.getProperty('osgie.manifest.mainclass')}"/>
+      	</j:if>
+      	-->
+      	<!--==================================================-->
+      	<!-- OSGi-Standard properties                         -->
+      	<!--==================================================-->
+      	<!-- osgi.bundle.vendor -->
+      	<j:if test="${pom.organization.name!=null}">
+      		<j:set var="bundle_vendor" value="${pom.organization.name}" />
+      	</j:if>
+      	<j:if test="${pom.getProperty('osgi.bundle.vendor')!=null}">
+      		<j:set var="bundle_vendor" value = "${pom.getProperty('osgi.bundle.vendor')}"/>
+      	</j:if>
+      	<j:if test="${bundle_vendor!=null}">
+      		<ant:attribute name = "Bundle-Vendor"      value = "${bundle_vendor}"/>
+      	</j:if>
+      	
+      	<!-- osgi.bundle.docurl -->
+      	<j:if test="${pom.organization.url!=null}">
+      		<j:set var="bundle_docurl" value="${pom.organization.url}" />
+      	</j:if>
+      	<j:if test="${pom.getProperty('osgi.bundle.docurl')!=null}">
+      		<j:set var="bundle_docurl" value = "${pom.getProperty('osgi.bundle.docurl')}"/>
+      	</j:if>
+      	<j:if test="${bundle_docurl!=null}">
+      		<ant:attribute name = "Bundle-DocURL"      value = "${bundle_docurl}"/>
+      	</j:if>      	
+      	
+      	<!-- osgi.bundle.version -->
+      	<j:if test="${pom.currentVersion!=null}">
+      		<j:set var="bundle_version" value="${pom.currentVersion}" />
+      	</j:if>
+      	<j:if test="${pom.getProperty('osgi.bundle.version')!=null}">
+      		<j:set var="bundle_version" value="${pom.getProperty('osgi.bundle.version')}" />
+      	</j:if>
+      	<j:if test="${bundle_version!=null}">
+      		<ant:attribute name = "Bundle-Version"      value = "${bundle_version}"/>
+      	</j:if>
+      	
+
+      	<!-- osgi.bundle.name -->
+      	<j:if test="${pom.name!=null}">
+      		<j:set var="bundle_name" value="${pom.name}" />
+      	</j:if>
+      	<j:if test="${pom.getProperty('osgi.bundle.name')!=null}">
+      		<j:set var="bundle_name" value = "${pom.getProperty('osgi.bundle.name')}"/>
+      	</j:if>
+      	<j:if test="${bundle_name!=null}">
+      		<ant:attribute name = "Bundle-Name"      value = "${bundle_name}"/>
+      	</j:if>
+      	
+      	<!-- eclipse.bundle.symbolicname -->
+      	<j:if test="${pom.name!=null}">
+      		<j:set var="symbolic_name" value="${pom.name}" />
+      	</j:if>
+      	<j:if test="${pom.getProperty('eclipse.bundle.symbolicname')!=null}">
+      		<j:set var="symbolic_name" value = "${pom.getProperty('eclipse.bundle.symbolicname')}"/>
+      	</j:if>
+      	<j:if test="${symbolic_name!=null}">
+      		<ant:attribute name = "Bundle-SymbolicName"      value = "${symbolic_name}"/>
+      	</j:if>
+      	
+      	<!-- osgi.bundle.description -->
+      	<j:if test="${pom.shortDescription!=null}">
+      		<j:set var="bundle_desc" value="${pom.shortDescription}" />
+      	</j:if>
+      	<j:if test="${pom.getProperty('osgi.bundle.description')!=null}">
+      		<j:set var="bundle_desc" value = "${pom.getProperty('osgi.bundle.description')}"/>
+      	</j:if>
+      	<j:if test="${bundle_desc!=null}">
+      		<ant:attribute name = "Bundle-Description"      value = "${bundle_desc}"/>
+      	</j:if>
+      	      	
+      	<!-- osgi.bundle.activator -->
+      	<j:if test="${bi.bundleActivator!=null}">
+      		<j:set var="bundle_activator" value="${bi.bundleActivator}" />
+      	</j:if>
+      	<j:if test="${pom.getProperty('eclipse.bundle.activator')!=null}">
+      		<j:set var="bundle_activator" value="${pom.getProperty('eclipse.bundle.activator')}" />
+      	</j:if>
+      	<j:if test="${bundle_activator!=null}">
+      		<ant:attribute name = "Bundle-Activator"      value = "${bundle_activator}"/>
+      	</j:if>
+      	
+      	<!-- osgi.bundle.category -->
+      	<j:if test="${pom.getProperty('osgi.bundle.category')!=null}">
+      		<ant:attribute name = "Bundle-Category"       value = "${pom.getProperty('osgi.bundle.category')}"/>
+      	</j:if>
+      	
+      	<!-- osgi.bundle.config -->
+      	<j:if test="${pom.getProperty('osgi.bundle.config')!=null}">
+      		<ant:attribute name = "Bundle-Config"         value = "${pom.getProperty('osgi.bundle.config')}"/>
+      	</j:if>
+      	
+      	<!-- osgi.bundle.classpath -->
+      	<j:if test="${pom.getProperty('osgi.bundle.classpath')!=null}">
+      		<ant:attribute name = "Bundle-Classpath"         value = "${pom.getProperty('osgi.bundle.classpath')}"/>
+      	</j:if>
+      	
+      	<!-- osgi.bundle.nativecode -->
+      	<j:if test="${pom.getProperty('osgi.bundle.nativecode')!=null}">
+      		<ant:attribute name = "Bundle-NativeCode"         value = "${pom.getProperty('osgi.bundle.nativecode')}"/>
+      	</j:if>
+      	
+      	<!-- eclipse.export.service -->
+      	<j:if test="${pom.getProperty('eclipse.export.service')!=null}">
+      		<ant:attribute name = "Export-Service"         value = "${pom.getProperty('eclipse.export.service')}"/>
+      	</j:if>
+      	
+      	<!-- eclipse.import.service -->
+      	<j:if test="${pom.getProperty('eclipse.import.service')!=null}">
+      		<ant:attribute name = "Import-Service"         value = "${pom.getProperty('eclipse.import.service')}"/>
+      	</j:if>
+      	
+      	<!-- eclipse.export.package -->
+      	<j:if test="${bi.exportedPackages!=null}">
+      		<j:set var="export_package" value="${bi.exportedPackages}" />
+      	</j:if>
+      	<j:if test="${pom.getProperty('eclipse.export.package')!=null}">
+      		<j:set var="export_package" value="${pom.getProperty('eclipse.export.package')}" />
+      	</j:if>
+      	<j:if test="${export_package!=null and export_package!=''}">
+      		<ant:attribute name = "Export-Package"         value = "${export_package}"/>
+      	</j:if>
+      	
+      	<!-- eclipse.import.package -->
+      	<j:if test="${bi.importedPackages!=null}">
+      		<j:set var="import_package" value="${bi.importedPackages}" />
+      	</j:if>
+      	<j:if test="${pom.getProperty('eclipse.import.package')!=null}">
+      		<j:set var="import_package" value="${pom.getProperty('eclipse.import.package')}" />
+      	</j:if>
+      	<j:if test="${import_package!=null and import_package!=''}">
+      		<ant:attribute name = "Import-Package"         value = "${import_package}"/>
+      	</j:if>
+      	
+        <!-- osgi.dynimport.package -->
+      	<j:if test="${pom.getProperty('osgi.dynimport.package')!=null}">
+      		<j:set var="dynimport_package" value="${pom.getProperty('osgi.dynimport.package')}" />
+      	</j:if>
+      	<j:if test="${dynimport_package!=null and dynimport_package!=''}">
+      		<ant:attribute name = "DynamicImport-Package"         value = "${dynimport_package}"/>
+      	</j:if>
+      	
+      	<!-- bundle.classpath -->
+      	<ant:attribute name = "Bundle-ClassPath"   value = "${bundle_classpath}"/>
+      	
+      	<!-- eclipse.require.bundle -->
+      	<j:if test="${pom.name!=null}">
+      		<j:set var="require_bundle" value="${pom.name}" />
+      	</j:if>
+      	<j:if test="${pom.getProperty('eclipse.require.bundle')!=null}">
+      		<j:set var="require_bundle" value = "${pom.getProperty('eclipse.require.bundle')}"/>
+      	</j:if>
+      	<j:if test="${require_bundle!=null}">
+      		<ant:attribute name = "Require-Bundle"      value = "${require_bundle}"/>
+      	</j:if>
+      	
+      	<!-- eclipse.autostart -->
+      	<j:if test="${pom.name!=null}">
+      		<j:set var="autostart" value="${pom.name}" />
+      	</j:if>
+      	<j:if test="${pom.getProperty('eclipse.autostart')!=null}">
+      		<j:set var="autostart" value = "${pom.getProperty('eclipse.autostart')}"/>
+      	</j:if>
+      	<j:if test="${autostart!=null}">
+      		<ant:attribute name = "Eclipse-AutoStart"      value = "${autostart}"/>
+      	</j:if>
+      	
+      	<!--=====================================================-->
+      	<!-- OSGi-Extensions (no from manifest and OSGi standard -->
+      	<!--=====================================================-->
+      	<ant:attribute name = "Build-Date"            value = "${bundle.date}"/>
+        
+        
+      </ant:manifest>
+   
+   </goal>
+	
 	<!--=====================================================-->
     <!-- thirdparty package generation                       -->
     <!--=====================================================-->
@@ -312,6 +612,8 @@
 			repositoryLocal="${maven.repo.local}"
 		/>
 		
-		
 	</goal>
+	
+	
+	
 </project>
