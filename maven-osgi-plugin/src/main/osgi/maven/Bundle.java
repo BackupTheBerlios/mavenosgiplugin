@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
@@ -343,40 +344,52 @@ public class Bundle
 
         } else
         {
-
-            BufferedReader breader = new BufferedReader(new FileReader(new File(bundledir + File.separatorChar + ".."
-                    + File.separatorChar + "project.xml")));
-
-            String line = breader.readLine();
-
-            // parse project.xml
-            while (line != null)
+            
+            // get short description
+            description = project.getShortDescription();
+            
+            // get dependencies
+            List deps = project.getDependencies();
+            
+            for( Iterator it = deps.iterator(); it.hasNext();)
             {
-                if (line.indexOf("shortDescription") > -1)
-                {
-                    description = XMLHelpers.getTagContent(breader, line, "shortDescription");
-                }
-
-                if (line.indexOf("dependency") > -1)
-                {
-                    String dependency = XMLHelpers.getTagContent(breader, line, "dependency");
-
-                    dependencies.add(XMLHelpers.getTagContent(dependency, "artifactId"));
-                    dependencies.add(XMLHelpers.getTagContent(dependency, "groupId"));
-
-                    String version = XMLHelpers.getTagContent(dependency, "version");
-                    if (version.equals("${pom.currentVersion}"))
-                    {
-                        version = bversion;
-                    }
-
-                    dependencies.add(version);
-
-                }
-
-                line = breader.readLine();
+                Dependency dep = (Dependency)it.next();
+                                
+                if (dep.getProperty("obr.dynamic") == null)
+                    dependencies.add(dep);
             }
 
+//            BufferedReader breader = new BufferedReader(new FileReader(new File(bundledir + File.separatorChar + ".."
+//                    + File.separatorChar + "project.xml")));
+//
+//            String line = breader.readLine();
+            // parse project.xml
+//            while (line != null)
+//            {
+//                if (line.indexOf("shortDescription") > -1)
+//                {
+//                    description = XMLHelpers.getTagContent(breader, line, "shortDescription");
+//                }      
+//                if (line.indexOf("dependency") > -1)
+//                {
+//                    String dependency = XMLHelpers.getTagContent(breader, line, "dependency");
+//                    
+//                    dependencies.add(XMLHelpers.getTagContent(dependency, "artifactId"));
+//                    dependencies.add(XMLHelpers.getTagContent(dependency, "groupId"));
+//
+//                    String version = XMLHelpers.getTagContent(dependency, "version");
+//                    if (version.equals("${pom.currentVersion}"))
+//                    {
+//                        version = bversion;
+//                    }
+//
+//                    dependencies.add(version);
+//                    
+//
+//                }
+//                line = breader.readLine();
+//            }
+            
 //            sourceUrl = new String("unknown");
 //            docUrl = new String("unknown");
         }
@@ -444,9 +457,11 @@ public class Bundle
         {
             for (Enumeration en = dependencies.elements(); en.hasMoreElements();)
             {
-                String depname = (String) en.nextElement();
-                String depgroup = (String) en.nextElement();
-                String depversion = (String) en.nextElement();
+                Dependency dep = (Dependency)en.nextElement();
+                
+                String depname = dep.getArtifactId();
+                String depgroup = dep.getGroupId();
+                String depversion = dep.getVersion();
                 buf.append("\t<dependency-uuid>");
                 buf.append(depgroup + ":" + depname + ":" + depversion + ":");
                 buf.append("</dependency-uuid>\n");

@@ -57,7 +57,7 @@
           </td>
         </tr>
         <tr>
-          <td>osgi.bundles.activator</td>
+          <td>osgi.bundle.activator</td>
           <td>Yes</td>
           <td>
           	Parses all project packages and searches for the
