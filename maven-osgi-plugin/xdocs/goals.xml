@@ -38,6 +38,14 @@
         </tr>  
         
         <tr>
+          <td>osgi:deploy</td>
+          <td></td>
+          <td>
+            Deploy an OSGi bundle to the remote repository.
+          </td>
+        </tr>  
+        
+        <tr>
           <td>osgi:thirdparty-jar</td>
           <td>-DgroupId=_grp_ -DartifactId=_art_ -Dversion=_ver_ -Dattributes=[export],[import] -Dsuffix=_s_</td>
           <td>

@@ -15,7 +15,7 @@
     
 		<subsection name="Manually">
 		<ul>
-        	<li>get newest version from <a href="http://wlab.ethz.ch/maven/repository/maven/plugins/">maven-osgi-plugin</a></li>
+        	<li>get newest version from <a href="http://osgirepo.berlios.de/maven/repository/maven/plugins/">maven-osgi-plugin</a></li>
       		<li>Copy the jar file into the maven plugins directory (e.g. maven-1.0-rc3/plugins, not the .maven/plugins).</li>
       	</ul>    
    		</subsection>

@@ -62,6 +62,21 @@
   </goal>
   
   <!--==================================================================-->
+  <!-- Deploy an OSGi bundle to the remote repository                   -->
+  <!--==================================================================-->  
+  <goal
+    name="osgi:deploy"
+    prereqs="osgi:jar"
+    description="Deploy an OSGi bundle to the remote repository">
+
+    <artifact:deploy
+      artifact="${maven.build.dir}/${maven.final.name}.jar"
+      type="jar"
+      project="${pom}"
+    />
+  </goal>
+  
+  <!--==================================================================-->
   <!-- Builds an OSGi jar file                                          -->
   <!--==================================================================-->
 
@@ -206,6 +221,18 @@
       	<j:if test="${pom.getProperty('osgi.bundle.classpath')!=null}">
       		<ant:attribute name = "Bundle-Classpath"         value = "${pom.getProperty('osgi.bundle.classpath')}"/>
       	</j:if>
+       	<!-- osgi.bundle.classpath alternative -->
+      	<j:if test="${pom.getProperty('osgi.bundle.classpath')==null}">
+      	
+      		<j:forEach var="dep" items="${pom.dependencies}">
+                <j:if test="${dep.getProperty('osgi.jar.bundle')=='true'}">
+                    <j:set var="osgi.jar.classpath" value="${osgi.jar.classpath},${dep.artifact}" /> 
+                </j:if>
+            </j:forEach>
+            <j:if test="${osgi.jar.classpath.length() != 0}">
+                <ant:attribute name="Bundle-Classpath" value=".${osgi.jar.classpath}"/>
+            </j:if>
+      	</j:if>
       	
       	<!-- osgi.bundle.nativecode -->
       	<j:if test="${pom.getProperty('osgi.bundle.nativecode')!=null}">
@@ -255,6 +282,7 @@
       	</j:if>
       	<ant:echo>DynamicImport-Package: ${dynimport_package}</ant:echo>
       	
+       	
       	<!--=====================================================-->
       	<!-- OSGi-Extensions (no from manifest and OSGi standard -->
       	<!--=====================================================-->
@@ -263,11 +291,30 @@
         
       </ant:manifest>
     
+    
       <!--<ant:fileset dir="${maven.src.dir}"/>-->
       <ant:fileset dir="${maven.build.dest}"
         includes="**">
       </ant:fileset>
 
+		<!-- TR: bundle libs-->
+		<j:forEach var="lib" items="${pom.artifacts}">
+        <j:set var="dep" value="${lib.dependency}"/>      
+        <j:if test="${dep.getProperty('osgi.jar.bundle')=='true'}">
+          
+          <!-- 
+           We know that this dep "wants" to be bundled.
+          -->
+                    
+          <ant:echo>Bundling: ${dep.type} - ${lib.file.name}</ant:echo>                                             
+          <ant:fileset dir="${lib.file.parent}">
+            <ant:include name="${lib.file.name}"/>
+          </ant:fileset>
+          <!-- END TR: bundle libs-->
+            
+        </j:if>  
+      </j:forEach>
+      
     </ant:jar>
 
   </goal>
@@ -275,11 +322,16 @@
   <!--==================================================================-->
   <!-- Build eclipse plugin                                             -->
   <!--==================================================================-->
+	<j:set var="pluginversion" value="${pom.currentVersion}" />
+
+    <j:if test="${pluginversion.endsWith('-SNAPSHOT') == 'true'}">
+      	<j:set var="pluginversion" value="${pluginversion.substring(0, pluginversion.indexOf('-SNAPSHOT'))}" />
+    </j:if>
 	<j:set var="plugin_id"  value="${pom.getProperty('eclipse.bundle.symbolicname')}"/>
-	<j:set var="plugin_name"  value="${plugin_id}_${pom.currentVersion}"/>
+	<j:set var="plugin_name"  value="${plugin_id}_${pluginversion}"/>
 	<j:set var="plugin_name_dir"  value="${maven.build.dir}/${tmp.dir}/${plugin_name}"/>
 	
-	<goal name="eclipse:plugin">
+	<goal name="eclipse:plugin" description="Creates an eclipse compatible plugin.">
 		
 		<attainGoal name="osgi:install"/>
 		

@@ -379,8 +379,8 @@ public class Bundle
     	buf.append("</bundle>");
     	
     	// Debug output:
-    	System.out.println("OBR:");
-    	System.out.println(buf.toString());
+//    	System.out.println("OBR:");
+//    	System.out.println(buf.toString());
     	
     	File obrfile = new File(bundledir + File.separatorChar + bname + "-"
                 + bversion + ".obr");

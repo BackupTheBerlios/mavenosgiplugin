@@ -113,7 +113,7 @@ public class BundleInfo
 			m_bundle = new Bundle(repolocal, bundledir, group, name, version,
 			        true);
 			m_bundle.generateOBR(null);
-			System.out.println("[echo] OBR file generated");
+//			System.out.println("[echo] OBR file generated");
             
 		} catch (NotFoundException e) {			
 			e.printStackTrace();

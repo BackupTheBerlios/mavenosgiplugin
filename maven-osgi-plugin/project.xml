@@ -23,6 +23,7 @@
   <shortDescription>An OSGi Maven plugin to generate the manifest.</shortDescription>
 
   <developers>
+  
     <developer>
       <name>Andreas Frei</name>
       <id>andfrei</id>
@@ -31,7 +32,63 @@
       <timezone>+1</timezone>
       <organization>ETHZ</organization>
     </developer>
+    
+    <developer>
+      <name>René Müller</name>
+      <id>muellren</id>
+      <email>muellren_student.inf.ethz.ch</email>
+      <roles>
+        <role>developer (RCX part)</role>
+        <role>developer (low level iPAQ part)</role>
+        <role>electrical engineer</role>
+      </roles>
+      <organization>ETHZ</organization>
+    </developer>
+    
+    <developer>
+      <name>Michael Duller</name>
+      <id>dullerm</id>
+      <email>michael_duller.net</email>
+      <roles>
+        <role>developer (low level iPAQ part)</role>
+        <role>system administrator (workstations and iPAQs)</role>
+      </roles>
+      <organization>ETHZ</organization>
+    </developer>
+    
+    <developer>
+      <name>Jan S. Rellermeyer</name>
+      <id>jrellermeyer</id>
+      <email>jrellermeyer_student.ethz.ch</email>
+      <roles>
+        <role>developer (high level iPAQ part)</role>
+        <role>developer of Jacl Event-System</role>
+        <role>designer of the prolog modell</role>        
+      </roles>
+      <organization>ETHZ</organization>
+    </developer>
+    
   </developers>
+  
+
+	<contributors>
+       
+	  	<contributor>
+	  	 	<name>Thomas Raugust</name>
+	  		<url>http://www.lineas.de</url>
+	  	</contributor>
+	  	
+	  	<contributor>
+	  	 	<name>Christian Niles</name>
+	  	</contributor>
+  	
+  		<contributor>
+	  	 	<name>Enrique Rodriguez</name>
+	  	</contributor>
+	  	 	
+  	</contributors>
+
+  
   
 	<siteAddress>shell.berlios.de</siteAddress>
   	<siteDirectory>/home/groups/mavenosgiplugin/htdocs</siteDirectory>

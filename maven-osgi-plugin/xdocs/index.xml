@@ -86,6 +86,17 @@
 
   	<shortDescription>Logging IKS OSGi bundle</shortDescription>
 
+	<dependency>
+	
+  		<groupId>jadabs</groupId>
+  		<artifactId>concurrent</artifactId>
+  		<version>${pom.currentVersion}</version>
+  		<properties>
+      		<osgi.jar.bundle>true</osgi.jar.bundle> 
+      	</properties>
+      	
+	</dependency>
+		
 </project>
 ]]></source>
 

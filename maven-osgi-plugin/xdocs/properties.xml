@@ -87,7 +87,12 @@
         <tr>
           <td>osgi.bundle.classpath</td>
           <td>Yes</td>
-          <td></td>
+          <td>
+          	If this property is specified it overwrites the automatically
+          	generated classpath. So, if dependencies should be included 
+          	in the bundle specify the property "osgi.jar.bundle" in the 
+          	to be included dependency.
+          </td>
           <td>
             Bundle-Classpath
           </td>

@@ -20,7 +20,9 @@
 package osgi.maven;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
+import java.util.Vector;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
@@ -31,21 +33,51 @@ import java.util.zip.ZipEntry;
 public class RtClasses {
 
     private boolean SYSTEM_CP = true;
-    
-    JarFile jarfile;
-    
+
+    private Vector systemJars = new Vector();
+
     public RtClasses() throws IOException {
-        
-        if (SYSTEM_CP)
-        {
-		        // setup rtpool
-		        //  get the rt.jar over java.home
-		        String rtfile = System.getProperty("java.home") + File.separatorChar
-		                + "lib" + File.separatorChar + "rt.jar";
-		        
-		        jarfile = new JarFile(rtfile);
+
+        if (SYSTEM_CP) {
+
+            String systemLibPath = System.getProperty("java.home")
+                    + File.separatorChar + "lib";
+
+            File systemLibDir = new File(systemLibPath);
+            if (systemLibDir.exists()) {
+
+                File[] jarFiles = systemLibDir.listFiles(new FileFilter() {
+
+                    public boolean accept(File pathname) {
+
+                        return pathname.getName()
+                                .toLowerCase()
+                                .endsWith(".jar")
+                                && pathname.isFile();
+
+                    }
+
+                });
+
+                for (int i = 0; i < jarFiles.length; i++) {
+                    
+                    systemJars.add(new JarFile(jarFiles[i]));
+                    
+                }
+                
+            }
+            
+            //
+            //            // setup rtpool
+            //            //  get the rt.jar over java.home
+            //            String rtfile = System.getProperty("java.home")
+            //                    + File.separatorChar + "lib" + File.separatorChar
+            //                    + "rt.jar";
+            //
+            //            jarfile = new JarFile(rtfile);
+            
         }
-        
+
     }
 
     /**
@@ -56,19 +88,21 @@ public class RtClasses {
      * @param clazz
      * @return
      */
-    public boolean isRtClass(String clazz)
-    {
+    public boolean isRtClass(String clazz) {
 
-        if (SYSTEM_CP)
-        {
-            String jarname = clazz.replace('.','/') + ".class";
-        
-		  			ZipEntry zipentry = jarfile.getEntry(jarname);
-		  			
-		  			if (zipentry != null)
-		  			    return true;
-        } else
-        {
+        if (SYSTEM_CP) {
+            
+            String jarname = clazz.replace('.', '/') + ".class";
+            for (int i = 0, s = systemJars.size(); i < s; i++) {
+                
+                JarFile jarFile = (JarFile) systemJars.get(i);
+                ZipEntry zipentry = jarFile.getEntry(jarname);
+                if (zipentry != null)
+                    return true;
+                
+            }
+
+        } else {
             // check against the
             if (EE.isMinimum(clazz) || EE.isFoundation(clazz))
                 return true;
