@@ -7,7 +7,7 @@
   </properties>
 
   <body>
-    <section name="Maven-OSGi Properties">
+    <section name="OSGi-Properties">
       <table>
         <tr>
           <th>Property name</th>
@@ -156,5 +156,65 @@
                                         
       </table>
     </section>
+    
+    <section name="OBR-Properties">
+      <table>
+      
+        <tr>
+          <th>Property name</th>
+          <th>Optional?</th>
+          <th>Default</th>
+          <th>OBR-Standard</th>
+        </tr>
+        
+        <tr>
+          <td>obr.bundle.srcurl</td>
+          <td>Yes</td>
+          <td></td>
+          <td>
+            Bundle-SourceURL
+          </td>
+        </tr>
+        
+        <tr>
+          <td>obr.bundle.docurl</td>
+          <td>Yes</td>
+          <td></td>
+          <td>
+            Bundle-DocURL
+          </td>
+        </tr>        
+
+        <tr>
+          <td>obr.bundle.updatelocation</td>
+          <td>Yes</td>
+          <td></td>
+          <td>
+            Bundle-UpdateLocation, Must be set in project.properties file!
+          </td>
+        </tr>
+        
+        <tr>
+          <td>obr.bundle.apivendor</td>
+          <td>Yes</td>
+          <td></td>
+          <td>
+            Bundle-APIVendor
+          </td>
+        </tr>   
+        
+        <tr>
+          <td>obr.bundle.vendor</td>
+          <td>Yes</td>
+          <td>pom.organization.name</td>
+          <td>
+            Bundle-Vendor
+          </td>
+        </tr>  
+                     
+       </table>
+    </section>
+    
+    
   </body>
 </document>

@@ -60,6 +60,14 @@ public class BundleInfo
     private String vendor;
     
     private String bundledir;
+    
+    private String category;
+    
+    private String docurl;
+    
+    private String srcurl;
+    
+    private String updatelocation;
 
     private Bundle m_bundle;
 
@@ -84,7 +92,8 @@ public class BundleInfo
     // Public Methods
     //--------------------------------------------------------//
     public void doExecute()
-    {               
+    {        
+       
         try {
             parseJar();
         } catch (IOException e) {
@@ -207,6 +216,26 @@ public class BundleInfo
         this.vendor = vendor;
     }
     
+    public void setCategory(String category)
+    {
+        this.category = category;
+    }
+    
+    public void setUpdateLocation(String updatelocation)
+    {
+        this.updatelocation = updatelocation;
+    }
+    
+    public void setSrcurl(String srcurl)
+    {
+        this.srcurl = srcurl;
+    }
+    
+    public void setDocurl(String docurl)
+    {
+        this.docurl = docurl;
+    }
+    
     public void setBundleDir(String bundledir)
     {
         this.bundledir = bundledir;
@@ -285,7 +314,8 @@ public class BundleInfo
     {
 
         m_bundle = new Bundle(repolocal, bundledir, artifactGroup, artifactId,
-                artifactVersion, apivendor, vendor);
+                artifactVersion, apivendor, vendor, category, updatelocation,
+                srcurl, docurl);
 
         // check the withpkgversion flag
         String pkgversion = System.getProperty("withpkgv");

@@ -54,76 +54,83 @@ public class Bundle
     /**
      * bgroup, bname, bversion defines a bundle
      */
-    private String  bgroup;
+    private String bgroup;
 
-    private String  bname;
+    private String bname;
 
-    private String  bversion;
+    private String bversion;
 
     private String apivendor;
-    
+
     private String vendor;
+
+    private String category;
+    
+    private String updatelocation;
+
+    private String sourceUrl;
+    
+    private String docUrl;
     
     /**
      * bgroup, bname, bversion can also be represented as a maven artifact.
      */
-    Artifact        artifact;
+    Artifact artifact;
 
     /**
-     * Set withpkgversion so the import/export package string
-     * has the specification-version.
-     * Default is false, not version numbers.
+     * Set withpkgversion so the import/export package string has the
+     * specification-version. Default is false, not version numbers.
      */
     boolean withpkgv = false;
-    
+
     /**
      * Specify the path where the jar resides.
      */
-    private String  bundledir       = ".";
+    private String bundledir = ".";
 
     /**
      * Specify the root path for the repository.
      */
-    private String  repolocal       = ".";
+    private String repolocal = ".";
 
     /**
      * The path to the deployed osgi jar.
      */
-    String          deployosgijar = null;
+    String deployosgijar = null;
 
     /**
      * check the system_CP if class supported (false), else check the CDC-Basis,
      * CDC-Foundation (EE) classes.
      */
-    boolean         SYSTEM_CP       = true;
+    boolean SYSTEM_CP = true;
 
-    private boolean thirdparty      = false;
+    private boolean thirdparty = false;
 
     /**
      * List of all dependency artifacts.
      */
-    private Vector  importArtifacts = new Vector();
+    private Vector importArtifacts = new Vector();
 
     /**
      * ImportSet collecting the packages which have to be imported.
      */
-    Set             importSet       = new TreeSet();
+    Set importSet = new TreeSet();
 
     /**
      * ExportSet collecting the packages wich can be exported.
      */
-    Set             exportSet       = new TreeSet();
+    Set exportSet = new TreeSet();
 
     /**
      * ActivatorSet collects the Classes implementing the BundleActivator.
      */
-    Set             activatorSet    = new TreeSet();
+    Set activatorSet = new TreeSet();
 
     /**
      * The BundleVerifier to check the dependencies.
      */
-    private BundleVerifier  bverifier       = BundleVerifier.Instance();
-    
+    private BundleVerifier bverifier = BundleVerifier.Instance();
+
     /**
      * A Bundle represents a normal jar file.
      * 
@@ -133,8 +140,8 @@ public class Bundle
      * @param name
      * @param version
      */
-    public Bundle(String repolocal, String bundledir, String group,
-            String name, String version) throws NotFoundException
+    public Bundle(String repolocal, String bundledir, String group, String name, String version)
+            throws NotFoundException
     {
         this.repolocal = repolocal;
         this.bundledir = bundledir;
@@ -165,7 +172,7 @@ public class Bundle
      * @param version
      * @param newversion
      */
-    public Bundle(String repolocal, String bundledir, String group,
+    public Bundle(String repolocal, String bundledir, String group, 
             String name, String version, boolean thirdparty)
             throws NotFoundException
     {
@@ -173,20 +180,25 @@ public class Bundle
         this.thirdparty = thirdparty;
     }
 
-    public Bundle(String repolocal, String bundledir, String group,
-            String name, String version, String apivendor, String vendor) 
-    throws NotFoundException
+    public Bundle(String repolocal, String bundledir, String group, 
+            String name, String version, String apivendor,
+            String vendor, String category, String updatelocation,
+            String srcurl, String docurl) throws NotFoundException
     {
         this(repolocal, bundledir, group, name, version);
         this.apivendor = apivendor;
         this.vendor = vendor;
+        this.category = category;
+        this.updatelocation = updatelocation;
+        this.sourceUrl = srcurl;
+        this.docUrl = docurl;
     }
-    
+
     public void setWithPkgVersion()
     {
         withpkgv = true;
     }
-    
+
     /**
      * Add a dependency artifact to the bundle.
      * 
@@ -201,8 +213,8 @@ public class Bundle
     }
 
     /**
-     * Parses the given jarfile for the imported, exported packages and
-     * the BundleActivator implementation classes.
+     * Parses the given jarfile for the imported, exported packages and the
+     * BundleActivator implementation classes.
      * 
      * @param jarfile
      */
@@ -227,8 +239,9 @@ public class Bundle
                     String clname = entry.getName().replaceAll("/", ".");
                     clname = clname.substring(0, clname.indexOf(".class"));
 
-//                    System.out.println(clname +" index: "+ clname.lastIndexOf("."));
-                    
+                    //                    System.out.println(clname +" index: "+
+                    // clname.lastIndexOf("."));
+
                     // packagename
                     int indexpkg;
                     if ((indexpkg = clname.lastIndexOf(".")) > 0)
@@ -239,19 +252,17 @@ public class Bundle
 
                     if (!thirdparty)
                     {
-                        boolean impls = bverifier.getDepsClasses()
-                                .doesImplementActivatorBundle(clname);
+                        boolean impls = bverifier.getDepsClasses().doesImplementActivatorBundle(clname);
 
                         if (impls)
                         {
                             activatorSet.add(clname);
-                            
+
                         }
 
                     }
 
-                    Collection classes = bverifier.getDepsClasses()
-                            .getClassImports(clname);
+                    Collection classes = bverifier.getDepsClasses().getClassImports(clname);
 
                     if (classes == null)
                         continue;
@@ -260,43 +271,36 @@ public class Bundle
                     {
                         String refclass = (String) it.next();
 
-
-
                         // check if the class is not of a system class
                         // (cdc-minimum, foundation) and
                         // not in the same jar file
                         // tocheckimports.add(refclass);
                         // Make sure that the import is not in one of the Java
                         // libraries, and that it is in one of the dependent
-                        // classes.. 
-                        if (!BundleVerifier.Instance().getRtClasses().
-                                isRtClass(refclass) &&
-                             BundleVerifier.Instance().getDepsClasses().
-                             getClassImports(refclass) != null)
+                        // classes..
+                        if (!BundleVerifier.Instance().getRtClasses().isRtClass(refclass)
+                                && BundleVerifier.Instance().getDepsClasses().getClassImports(refclass) != null)
                         {
-                        	//System.out.println(refclass);
-                        	int index = refclass.lastIndexOf(".");
-                        	String imppkg = "";
-                        	if (index > -1)
-                        	{
-                        		imppkg = refclass.
-                            	substring(0, refclass.lastIndexOf("."));
-                        	
-//                            System.out.println("import candidate: " + imppkg);
-                            
-                        		importSet.add(imppkg);
-                        	}
+                            //System.out.println(refclass);
+                            int index = refclass.lastIndexOf(".");
+                            String imppkg = "";
+                            if (index > -1)
+                            {
+                                imppkg = refclass.substring(0, refclass.lastIndexOf("."));
+
+                                //                            System.out.println("import candidate: " +
+                                // imppkg);
+
+                                importSet.add(imppkg);
+                            }
                         }
-                      
+
                     }
                 }
             }
 
             file.close();
 
-            // Generate extended OBR File           
-            generateOBR(new File(jarfile));      
-           
             // remove now from the importSet the ones which are included
             // in the bundle itself
             for (Iterator it = exportSet.iterator(); it.hasNext();)
@@ -304,130 +308,168 @@ public class Bundle
                 importSet.remove(it.next());
             }
 
+            // Generate extended OBR File
+            generateOBR(new File(jarfile));
+            
         } catch (IOException e)
         {
             e.printStackTrace();
         }
-        
-    }
-    
-    protected void generateOBR(File file) throws IOException {
-    	StringBuffer buf = new StringBuffer();
-    	String description = null;
-    	String sourceUrl;    	
-    	String docUrl;   
-    	String md5;
-    	if (file == null) {
-    		md5 = MD5.getHashString(new File(bundledir + File.separatorChar + bname + "-" + bversion + ".jar"));
-    	} else {    		
-    		md5 = MD5.getHashString(file);
-    	}
-    	Vector dependencies = new Vector();
-		
-    	if (thirdparty || file == null) {    		
-    		
-    		
-    		// defaults for thirdparty
-    		description = new String("thirdparty-jar " + bname);
-    		sourceUrl = new String("unknown");
-    		docUrl = new String("unknown");
-    		
-    	} else {
-    		    	
-    		
-    		BufferedReader breader = new BufferedReader(new FileReader(new File(bundledir + File.separatorChar + ".." + File.separatorChar + "project.xml")));
-    		
-    		String line = breader.readLine();
-    		
-    		// parse project.xml
-    		while (line != null) {
-    			if (line.indexOf("shortDescription") > -1) {    				    				
-    				description = XMLHelpers.getTagContent(breader, line, "shortDescription");
-    			}
-    			
-    			if (line.indexOf("dependency") > -1) {
-    				String dependency = XMLHelpers.getTagContent(breader, line, "dependency");
-    				
-    				dependencies.add(XMLHelpers.getTagContent(dependency, "artifactId"));
-    				dependencies.add(XMLHelpers.getTagContent(dependency, "groupId"));    				
-    				
-    				String version = XMLHelpers.getTagContent(dependency, "version");
-    				if (version.equals("${pom.currentVersion}")) {
-    					version = bversion; 
-    				}
-    				
-    				dependencies.add(version);    				
-    				
-    			}
-    			
-    			line = breader.readLine();
-    		}
-    		    		
-    		sourceUrl = new String("unknown");
-    		docUrl = new String("unknown");    		
-    	}
 
-    	// set up OBR file 
-    	buf.append("<bundle>\n");
-    	buf.append(XMLHelpers.emitTag("bundle-name", bname, 1));
-    	buf.append(XMLHelpers.emitTag("bundle-group", bgroup, 1));
-    	buf.append(XMLHelpers.emitTag("bundle-version", bversion, 1));
-    	
-    	// ok the uuid is repition, but to be compatible with knopflerfish
-    	buf.append(XMLHelpers.emitTag("bundle-uuid", bgroup+":"+bname+":"+bversion+":"));
-    	    	
-    	buf.append(XMLHelpers.emitMultilineTag("bundle-description", description, 1));
-    	
-    	if (apivendor == null)
-    	    buf.append(XMLHelpers.emitTag("bundle-apivendor", "", 1));
-    	else
-    	    buf.append(XMLHelpers.emitTag("bundle-apivendor", apivendor, 1));
-    	
-    	buf.append(XMLHelpers.emitTag("bundle-vendor", vendor, 1));
-    	
-    	
-    	
-    	// maybe we need here another tag
-    	buf.append(XMLHelpers.emitTag("update-location", "localhost://" + repolocal, 1));
-    	buf.append(XMLHelpers.emitTag("bundle-updatelocation", 
-    	        "http://osgirepo.berlios.de/maven/repository/" + bgroup+"/jars/"+
-    	        bname+"-"+bversion+".jar", 1));
-    	buf.append(XMLHelpers.emitMultilineTag("bundle-sourceurl", sourceUrl, 1));
-    	buf.append(XMLHelpers.emitMultilineTag("bundle-docurl", docUrl, 1));
-    	buf.append(XMLHelpers.emitTag("bundle-category", "General", 1));
-    	buf.append(XMLHelpers.emitTag("bundle-checksum", md5, 1));
-    	    	
-    	for (Iterator iter = importSet.iterator(); iter.hasNext(); ) {
-    		buf.append("\t<import-package package=\"" + iter.next() + "\"/>\n" );
-    	}
-    	for (Iterator iter = exportSet.iterator(); iter.hasNext(); ) {
-    		buf.append("\t<export-package package=\"" + iter.next() + "\"/>\n" );
-    	}
-    	if (!dependencies.isEmpty()) {
-    		buf.append("\t<dependencies>\n");
-    		for (Enumeration en = dependencies.elements(); en.hasMoreElements(); ) {
-    			buf.append("\t\t<bundle>\n");
-    			buf.append(XMLHelpers.emitTag("bundle-name", (String)en.nextElement(), 3));
-				buf.append(XMLHelpers.emitTag("bundle-group", (String)en.nextElement(), 3));
-				buf.append(XMLHelpers.emitTag("bundle-version", (String)en.nextElement(), 3));
-    			buf.append("\t\t</bundle>\n");
-    		}    		    		
-    		buf.append("\t</dependencies>\n");
-    	}
-    	buf.append("</bundle>\n");
-    	
-    	// Debug output:
-//    	System.out.println("OBR:");
-//    	System.out.println(buf.toString());
-    	
-    	File obrfile = new File(bundledir + File.separatorChar + bname + "-"
-                + bversion + ".obr");
-    	BufferedWriter bwriter = new BufferedWriter(new FileWriter(obrfile));
-    	bwriter.write(buf.toString());
-    	bwriter.flush();
-    	   	    	
     }
-         
+
+    protected void generateOBR(File file) throws IOException
+    {
+        StringBuffer buf = new StringBuffer();
+        String description = null;
+
+        String md5;
+        if (file == null)
+        {
+            md5 = MD5.getHashString(new File(bundledir + File.separatorChar + bname + "-" + bversion + ".jar"));
+        } else
+        {
+            md5 = MD5.getHashString(file);
+        }
+        Vector dependencies = new Vector();
+
+        if (thirdparty || file == null)
+        {
+
+            // defaults for thirdparty
+            description = new String("thirdparty-jar " + bname);
+            sourceUrl = new String("unknown");
+            docUrl = new String("unknown");
+
+        } else
+        {
+
+            BufferedReader breader = new BufferedReader(new FileReader(new File(bundledir + File.separatorChar + ".."
+                    + File.separatorChar + "project.xml")));
+
+            String line = breader.readLine();
+
+            // parse project.xml
+            while (line != null)
+            {
+                if (line.indexOf("shortDescription") > -1)
+                {
+                    description = XMLHelpers.getTagContent(breader, line, "shortDescription");
+                }
+
+                if (line.indexOf("dependency") > -1)
+                {
+                    String dependency = XMLHelpers.getTagContent(breader, line, "dependency");
+
+                    dependencies.add(XMLHelpers.getTagContent(dependency, "artifactId"));
+                    dependencies.add(XMLHelpers.getTagContent(dependency, "groupId"));
+
+                    String version = XMLHelpers.getTagContent(dependency, "version");
+                    if (version.equals("${pom.currentVersion}"))
+                    {
+                        version = bversion;
+                    }
+
+                    dependencies.add(version);
+
+                }
+
+                line = breader.readLine();
+            }
+
+//            sourceUrl = new String("unknown");
+//            docUrl = new String("unknown");
+        }
+
+        // set up OBR file
+        buf.append("<bundle>\n");
+        buf.append(XMLHelpers.emitTag("bundle-name", bname, 1));
+        buf.append(XMLHelpers.emitTag("bundle-group", bgroup, 1));
+        buf.append(XMLHelpers.emitTag("bundle-version", bversion, 1));
+
+        // ok the uuid is repition, but to be compatible with knopflerfish
+        buf.append(XMLHelpers.emitTag("bundle-uuid", bgroup + ":" + bname + ":" + bversion + ":"));
+
+        buf.append(XMLHelpers.emitMultilineTag("bundle-description", description, 1));
+
+        if (apivendor == null)
+            buf.append(XMLHelpers.emitTag("bundle-apivendor", "", 1));
+        else
+            buf.append(XMLHelpers.emitTag("bundle-apivendor", apivendor, 1));
+
+        buf.append(XMLHelpers.emitTag("bundle-vendor", vendor, 1));
+
+        // Jan, do we still need the update-location element??
+        buf.append(XMLHelpers.emitTag("update-location", "localhost://" + repolocal, 1));
+        
+        String bundlepath = bgroup + "/jars/" + bname + "-" + bversion + ".jar";
+        if (updatelocation == null)
+            buf.append(XMLHelpers.emitTag("bundle-updatelocation", 
+                    "http://osgirepo.berlios.de/maven/repository/" + bundlepath, 1));
+        else
+            buf.append(XMLHelpers.emitTag("bundle-updatelocation", 
+                    updatelocation +"/"+ bundlepath, 1));
+        
+        buf.append(XMLHelpers.emitMultilineTag("bundle-sourceurl", sourceUrl, 1));
+        buf.append(XMLHelpers.emitMultilineTag("bundle-docurl", docUrl, 1));
+        
+        if (category != null)
+            buf.append(XMLHelpers.emitTag("bundle-category", category, 1));
+        else
+            buf.append(XMLHelpers.emitTag("bundle-category", "general", 1));
+        
+        buf.append(XMLHelpers.emitTag("bundle-checksum", md5, 1));
+
+        for (Iterator iter = importSet.iterator(); iter.hasNext();)
+        {
+            buf.append("\t<import-package package=\"" + iter.next() + "\"/>\n");
+        }
+        
+        for (Iterator iterexp = exportSet.iterator(); iterexp.hasNext();)
+        {
+            buf.append("\t<export-package package=\"" + iterexp.next() + "\"/>\n");
+        }
+
+        if (!dependencies.isEmpty())
+        {
+            for (Enumeration en = dependencies.elements(); en.hasMoreElements();)
+            {
+                String depname = (String) en.nextElement();
+                String depgroup = (String) en.nextElement();
+                String depversion = (String) en.nextElement();
+                buf.append("\t<dependency-uuid>");
+                buf.append(depgroup + ":" + depname + ":" + depversion + ":");
+                buf.append("</dependency-uuid>\n");
+            }
+        }
+
+        //    	if (!dependencies.isEmpty()) {
+        //    		buf.append("\t<dependencies>\n");
+        //    		for (Enumeration en = dependencies.elements(); en.hasMoreElements();
+        // ) {
+        //    			buf.append("\t\t<bundle>\n");
+        //    			buf.append(XMLHelpers.emitTag("bundle-name",
+        // (String)en.nextElement(), 3));
+        //				buf.append(XMLHelpers.emitTag("bundle-group",
+        // (String)en.nextElement(), 3));
+        //				buf.append(XMLHelpers.emitTag("bundle-version",
+        // (String)en.nextElement(), 3));
+        //    			buf.append("\t\t</bundle>\n");
+        //    		}
+        //    		buf.append("\t</dependencies>\n");
+        //    	}
+        buf.append("</bundle>\n");
+
+        // Debug output:
+        //    	System.out.println("OBR:");
+        //    	System.out.println(buf.toString());
+
+        File obrfile = new File(bundledir + File.separatorChar + bname + "-" + bversion + ".obr");
+        BufferedWriter bwriter = new BufferedWriter(new FileWriter(obrfile));
+        bwriter.write(buf.toString());
+        bwriter.flush();
+
+    }
 
     /**
      * Returns the imported packages as a String compatible to the OSGi
@@ -442,7 +484,7 @@ public class Bundle
 
         return pkgs;
     }
-    
+
     /**
      * Returns the exported packages as a String compatible to the OSGi
      * specification, (e.g. eventsystem-api;specification-version=0.6,...)
@@ -452,19 +494,20 @@ public class Bundle
     public String getExportPackage()
     {
         //String pkgs = BundleInfo.Set2String(exportSet);
-        
-      	if (exportSet.isEmpty())
-        		return "";
-        	
+
+        if (exportSet.isEmpty())
+            return "";
+
         StringBuffer sb = new StringBuffer();
-        for (Iterator it = exportSet.iterator(); it.hasNext();) {
-            
+        for (Iterator it = exportSet.iterator(); it.hasNext();)
+        {
+
             sb.append((String) it.next());
             // if withpkgversion set, add the specification-version
             if (withpkgv)
-                sb.append("; specification-version="+ bversion);
-            
-            if (it.hasNext()) 
+                sb.append("; specification-version=" + bversion);
+
+            if (it.hasNext())
                 sb.append(",");
         }
 
@@ -483,38 +526,37 @@ public class Bundle
     }
 
     /**
-     * Check if refclass is imported from an other package then 
-     * the vm core packages. Can also include packages from
-     * the same bundle but in another package.
+     * Check if refclass is imported from an other package then the vm core
+     * packages. Can also include packages from the same bundle but in another
+     * package.
      * 
      * @param refclass
      */
-//    private boolean isImported(String refclass)
-//    {
-//        String pkg = refclass.substring(0, refclass.lastIndexOf("."));
-//
-//        
-//        
-//        if (SYSTEM_CP)
-//        {
-//            // check against the system.classpath
-//            // check against another rt.jar
-//
-//            if (!BundleVerifier.Instance().getRtClasses().isRtClass(refclass))
-//            {
-//                System.out.println("import package:" + pkg);
-//                importSet.add(pkg);
-//            } else
-//                System.out.println("class found: " + refclass);
-//
-//        } else
-//        {
-//            // check against the
-//            if (!EE.isMinimum(refclass) && !EE.isFoundation(refclass))
-//                    importSet.add(pkg);
-//        }
-//    }
-
+    //    private boolean isImported(String refclass)
+    //    {
+    //        String pkg = refclass.substring(0, refclass.lastIndexOf("."));
+    //
+    //        
+    //        
+    //        if (SYSTEM_CP)
+    //        {
+    //            // check against the system.classpath
+    //            // check against another rt.jar
+    //
+    //            if (!BundleVerifier.Instance().getRtClasses().isRtClass(refclass))
+    //            {
+    //                System.out.println("import package:" + pkg);
+    //                importSet.add(pkg);
+    //            } else
+    //                System.out.println("class found: " + refclass);
+    //
+    //        } else
+    //        {
+    //            // check against the
+    //            if (!EE.isMinimum(refclass) && !EE.isFoundation(refclass))
+    //                    importSet.add(pkg);
+    //        }
+    //    }
     /**
      * @param deploy
      * @param suffix
@@ -523,56 +565,54 @@ public class Bundle
      * @throws IOException
      * @throws JarException
      */
-    public void createOSGiBundle(boolean deploy, String suffix, String atts)
-            throws IOException, JarException
+    public void createOSGiBundle(boolean deploy, String suffix, String atts) throws IOException, JarException
     {
-            
-    	
-    	String toaddsuffix = "";
-        if (suffix != null) toaddsuffix = "-" + suffix;
 
-        String jarfile = bundledir + File.separatorChar + bname + "-"
-                + bversion + ".jar";
+        String toaddsuffix = "";
+        if (suffix != null)
+            toaddsuffix = "-" + suffix;
+
+        String jarfile = bundledir + File.separatorChar + bname + "-" + bversion + ".jar";
         String osgijarfile = bname + "-" + bversion + toaddsuffix + ".jar";
 
         if (deploy)
-            deployosgijar = repolocal + File.separatorChar + bgroup
-                    + File.separatorChar + "jars" + File.separatorChar
+            deployosgijar = repolocal + File.separatorChar + bgroup + File.separatorChar + "jars" + File.separatorChar
                     + osgijarfile;
-        
+
         else
             deployosgijar = bundledir + File.separatorChar + osgijarfile;
 
         System.out.println("DeployOSGiJar: " + deployosgijar);
-        System.out.println("atts: "+atts);
-        
-                
+        System.out.println("atts: " + atts);
+
         // parse the bundle to generate the import/export, and activator set
         parseBundle(jarfile);
 
         System.out.println("jarfile parsed");
-        
+
         Vector attv = new Vector();
 
         if (atts.matches(".*(export)+.*"))
         {
             String pkgs = getExportPackage();
-            if (pkgs != null) attv.add("Export-Package: " + pkgs);
+            if (pkgs != null)
+                attv.add("Export-Package: " + pkgs);
         }
-        
+
         if (atts.matches(".*(import)+.*"))
         {
             String pkgs = getImportPackage();
-            if (pkgs != null) attv.add("Import-Package: " + pkgs);
+            if (pkgs != null)
+                attv.add("Import-Package: " + pkgs);
         }
-        
+
         String[] attar = new String[attv.size()];
         attv.copyInto(attar);
-               
+
         // Now that we have the import, export it has to be merged
         // with the already created Manifest file inside the jar
         // to be backward compatible.
-        
+
         // unzip to a tmp dir
         String tmppath = bundledir + File.separatorChar + "_tmp_osgi";
 
@@ -589,7 +629,6 @@ public class Bundle
 
         // delete tmp folder recursively
         JarFactory.deleteDirReq(tmpdir);
-
 
     }
 
