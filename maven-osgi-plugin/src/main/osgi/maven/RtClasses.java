@@ -22,6 +22,8 @@ package osgi.maven;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Vector;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
@@ -40,42 +42,50 @@ public class RtClasses {
 
         if (SYSTEM_CP) {
 
-            String systemLibPath = System.getProperty("java.home")
-                    + File.separatorChar + "lib";
-
-            File systemLibDir = new File(systemLibPath);
-            if (systemLibDir.exists()) {
-
-                File[] jarFiles = systemLibDir.listFiles(new FileFilter() {
-
-                    public boolean accept(File pathname) {
-
-                        return pathname.getName()
-                                .toLowerCase()
-                                .endsWith(".jar")
-                                && pathname.isFile();
-
-                    }
-
-                });
-
-                for (int i = 0; i < jarFiles.length; i++) {
-                    
-                    systemJars.add(new JarFile(jarFiles[i]));
-                    
-                }
-                
+            ArrayList syslibpaths = new ArrayList();
+            
+            // check if using a MacOSX VM to get runtime jars
+            if (System.getProperty("os.name").matches("(?i).*mac.*"))
+            {
+                syslibpaths.add(System.getProperty("java.home") + 
+                        File.separatorChar+"lib");
+                syslibpaths.add(System.getProperty("java.home") + 
+                        File.separatorChar+".."+ File.separatorChar+"/Classes");
+            }
+            // else use the usual way for runtime jars
+            else
+            {
+                syslibpaths.add(System.getProperty("java.home") + File.separatorChar + "lib");
             }
             
-            //
-            //            // setup rtpool
-            //            //  get the rt.jar over java.home
-            //            String rtfile = System.getProperty("java.home")
-            //                    + File.separatorChar + "lib" + File.separatorChar
-            //                    + "rt.jar";
-            //
-            //            jarfile = new JarFile(rtfile);
-            
+            // go through the list of systempaths
+            for (Iterator it = syslibpaths.iterator(); it.hasNext(); )
+            {
+                String syslibpath = (String)it.next();
+                
+	            File systemLibDir = new File(syslibpath);
+	            if (systemLibDir.exists()) 
+	            {
+	
+	                File[] jarFiles = systemLibDir.listFiles(new FileFilter() {
+	
+	                    public boolean accept(File pathname) {
+	
+	                        return pathname.getName()
+	                                .toLowerCase()
+	                                .endsWith(".jar")
+	                                && pathname.isFile();
+	
+	                    }
+	
+	                });
+	
+	                for (int i = 0; i < jarFiles.length; i++) 
+	                {	                    
+	                    systemJars.add(new JarFile(jarFiles[i]));
+	                }     
+	            }
+            }
         }
 
     }

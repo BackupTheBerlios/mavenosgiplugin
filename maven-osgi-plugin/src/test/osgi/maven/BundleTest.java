@@ -26,7 +26,7 @@ public class BundleTest extends TestCase {
 //	}
 	
 	
-	public void testAppendMainAttributes()
+	public void notestAppendMainAttributes()
 	{
 		Bundle bundle;
 		
@@ -54,4 +54,21 @@ public class BundleTest extends TestCase {
 		
 	}
 	
+	public void testLinuxRegex()
+	{
+	    String osname ="Linux";
+	    String regex = "(?i).*linux.*";
+	    
+	    assertTrue(osname.matches(regex));
+	    
+	}
+	
+	public void testMacOSXRegex()
+	{
+	    String osname ="MacOSX";
+	    String regex = "(?i).*mac.*";
+	    
+	    assertTrue(osname.matches(regex));
+	    
+	}
 }

@@ -103,7 +103,7 @@
   <build>
 
 	<sourceDirectory>${basedir}/src/main</sourceDirectory>
-	<!-- <unitTestSourceDirectory>${basedir}/src/test</unitTestSourceDirectory> -->
+	<unitTestSourceDirectory>${basedir}/src/test</unitTestSourceDirectory>
 
     <resources>
       <resource>
