@@ -12,6 +12,12 @@
   </properties>
   <body>
 
+    <release version="0.3.5" date="2005-02-08" description="fix small issues"> 
+      <action dev="andfrei" type="fix">
+		Same small bugs and enhancements.
+      </action>
+    </release>
+
     <release version="0.3.4" date="2004-12-19" description="fix classpath"> 
       <action dev="andfrei" type="add">
 		Fix import of included packages, thanks to Erwin Jansen.

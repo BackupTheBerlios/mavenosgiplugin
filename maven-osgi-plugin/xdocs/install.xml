@@ -24,7 +24,7 @@
 <source><![CDATA[
 maven \
 	-Dmaven.repo.remote=http://www.ibiblio.org/maven,http://osgirepo.berlios.de/maven/repository \
-	-DgroupId=maven -DartifactId=maven-osgi-plugin -Dversion=0.3.4 \
+	-DgroupId=maven -DartifactId=maven-osgi-plugin -Dversion=0.3.5 \
 	plugin:download
 ]]></source>
     	</subsection>
