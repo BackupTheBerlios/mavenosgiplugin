@@ -37,11 +37,6 @@
       <name>René Müller</name>
       <id>muellren</id>
       <email>muellren_student.inf.ethz.ch</email>
-      <roles>
-        <role>developer (RCX part)</role>
-        <role>developer (low level iPAQ part)</role>
-        <role>electrical engineer</role>
-      </roles>
       <organization>ETHZ</organization>
     </developer>
        
@@ -49,11 +44,6 @@
       <name>Jan S. Rellermeyer</name>
       <id>jrellermeyer</id>
       <email>jrellermeyer_student.ethz.ch</email>
-      <roles>
-        <role>developer (high level iPAQ part)</role>
-        <role>developer of Jacl Event-System</role>
-        <role>designer of the prolog modell</role>        
-      </roles>
       <organization>ETHZ</organization>
     </developer>
     
