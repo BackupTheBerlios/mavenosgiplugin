@@ -86,16 +86,18 @@
 
   	<shortDescription>Logging IKS OSGi bundle</shortDescription>
 
-	<dependency>
+	<dependencies>
 	
-  		<groupId>jadabs</groupId>
-  		<artifactId>concurrent</artifactId>
-  		<version>${pom.currentVersion}</version>
-  		<properties>
-      		<osgi.jar.bundle>true</osgi.jar.bundle> 
-      	</properties>
-      	
-	</dependency>
+       <dependency>
+            <groupId>jadabs</groupId>
+            <artifactId>concurrent</artifactId>
+            <version>1.0</version>
+            <properties>
+               <osgi.jar.bundle>true</osgi.jar.bundle> 
+            </properties>
+       </dependency>
+		
+	</dependencies>
 		
 </project>
 ]]></source>
@@ -114,6 +116,7 @@ Bundle-Version: 1.2
 Bundle-Name: Logging-IKS
 Bundle-Description: Logging IKS OSGi bundle
 Export-Package: ch.ethz.iks.logger
+Bundle-Classpath: .,concurrent-1.0.jar
 Build-Date: Fri June 11 2004, 18:37:21
 ]]></source>
 

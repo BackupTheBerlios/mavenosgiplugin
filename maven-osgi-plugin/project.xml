@@ -5,7 +5,7 @@
   
   <groupId>maven</groupId>
   <id>maven-osgi-plugin</id>
-  <currentVersion>0.3.2-SNAPSHOT</currentVersion>
+  <currentVersion>0.3.3</currentVersion>
   
   <name>Maven OSGi Plugin</name>
   
@@ -44,18 +44,7 @@
       </roles>
       <organization>ETHZ</organization>
     </developer>
-    
-    <developer>
-      <name>Michael Duller</name>
-      <id>dullerm</id>
-      <email>michael_duller.net</email>
-      <roles>
-        <role>developer (low level iPAQ part)</role>
-        <role>system administrator (workstations and iPAQs)</role>
-      </roles>
-      <organization>ETHZ</organization>
-    </developer>
-    
+       
     <developer>
       <name>Jan S. Rellermeyer</name>
       <id>jrellermeyer</id>

@@ -12,6 +12,25 @@
   </properties>
   <body>
 
+    <release version="0.3.3" date="2004-12-11" description="new goals, more vm support"> 
+      <action dev="andfrei" type="add">
+		A new goal osgi:deploy allows to deploy the osgi to a remote repository, 
+		thanks to Enrique Rodriguez.
+      </action>
+      <action dev="andfrei" type="add">
+		New VM support for IBM VM and MacOSX, thanks to Christian Niles and Rene Mueller.
+      </action>
+      <action dev="andfrei" type="add">
+		Classpath integrated with including jar into bundle, thanks to Thomas Raugust.
+      </action> 
+      <action dev="jrellermeyer" type="add">
+		A first prototype to generate OBR descriptions.
+      </action>
+      <action dev="andfrei" type="add">
+		A first prototype goal to generate eclipse plugins.
+      </action> 
+    </release>
+    
     <release version="0.3.2" date="2004-11-09" description="add new properties, docu"> 
       <action dev="andfrei" type="add">
 		We moved to BerliOS.de.

@@ -1,0 +1,27 @@
+<project default="plugin:install"
+	xmlns:ant="jelly:ant">
+
+
+
+  <postGoal name="plugin:repository-deploy">
+  
+	<attainGoal name="plugin:osgirepo-local-deploy" />
+
+  </postGoal>
+  
+  <goal name="plugin:osgirepo-local-deploy">
+  
+	  <ant:mkdir dir="${local.osgi.repository}/maven/poms" />
+	  	<ant:mkdir dir="${local.osgi.repository}/maven/plugins" />
+	  	
+		<ant:copy 
+			file="${basedir}/project.xml"
+			tofile="${local.osgi.repository}/maven/poms/${pom.artifactId}-${pom.currentVersion}.pom" />
+			
+		<ant:copy 
+			file="${maven.build.dir}/${pom.artifactId}-${pom.currentVersion}.jar"
+			todir="${local.osgi.repository}/maven/plugins" />
+  
+    </goal>
+  
+</project>

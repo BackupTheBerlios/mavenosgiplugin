@@ -11,6 +11,7 @@
     </links>
     
     <menu name="Overview">
+      <item name="Overview"      	href="/index.html" />
       <item name="Goals"      	href="/goals.html" />
       <item name="Properties" 	href="/properties.html" />
       <item name="Install"		href="/install.html" />
