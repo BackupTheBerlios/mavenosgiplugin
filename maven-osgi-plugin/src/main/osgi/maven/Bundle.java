@@ -19,7 +19,11 @@
  */
 package osgi.maven;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -270,6 +274,9 @@ public class Bundle
 
             file.close();
 
+            // Generate extended OBR File           
+            generateOBR(new File(jarfile));      
+           
             // remove now from the importSet the ones which are included
             // in the bundle itself
             for (Iterator it = exportSet.iterator(); it.hasNext();)
@@ -281,7 +288,99 @@ public class Bundle
         {
             e.printStackTrace();
         }
+        
     }
+    
+    private void generateOBR(File file) throws IOException {
+    	StringBuffer buf = new StringBuffer();
+    	String description = null;
+    	String sourceUrl;
+    	String docUrl;    	
+    	String md5 = MD5.getHashString(file);
+    	Vector dependencies = new Vector();
+		
+    	if (thirdparty) {
+    		
+    		description = new String("thirdparty-jar " + bname);
+    		sourceUrl = new String("unknown");
+    		docUrl = new String("unknown");
+    		
+    	} else {
+    		
+    		BufferedReader breader = new BufferedReader(new FileReader(new File("project.xml")));
+    		
+    		String line = breader.readLine();
+    		
+    		while (line != null) {
+    			if (line.indexOf("shortDescription") > -1) {    				    				
+    				description = XMLHelpers.getTagContent(breader, line, "shortDescription");
+    			}
+    			
+    			if (line.indexOf("dependency") > -1) {
+    				String dependency = XMLHelpers.getTagContent(breader, line, "dependency");
+    				  				
+    				dependencies.add(XMLHelpers.getTagContent(dependency, "groupId"));
+    				dependencies.add(XMLHelpers.getTagContent(dependency, "artifactId"));
+    				
+    				String version = XMLHelpers.getTagContent(dependency, "version");
+    				if (version.equals("${pom.currentVersion}")) {
+    					version = bversion; 
+    				}
+    				
+    				dependencies.add(version);    				
+    				
+    			}
+    			
+    			line = breader.readLine();
+    		}
+    		    		
+    		sourceUrl = new String("unknown");
+    		docUrl = new String("unknown");    		
+    	}
+
+    	buf.append("<bundle>\n");
+    	buf.append(XMLHelpers.emitTag("bundle-name", bname, 1));
+    	buf.append(XMLHelpers.emitTag("bundle-group", bgroup, 1));
+    	buf.append(XMLHelpers.emitMultilineTag("bundle-description", description, 1));
+    	buf.append(XMLHelpers.emitTag("bundle-version", bversion, 1));    	  	    	    	
+    	buf.append(XMLHelpers.emitTag("update-location", "localhost://" + repolocal, 1));
+    	buf.append(XMLHelpers.emitMultilineTag("bundle-sourceurl", sourceUrl, 1));
+    	buf.append(XMLHelpers.emitMultilineTag("bundle-docurl", docUrl, 1));
+    	buf.append(XMLHelpers.emitTag("bundle-category", "General", 1));
+    	buf.append(XMLHelpers.emitTag("bundle-checksum", md5, 1));
+    	    	
+    	for (Iterator iter = importSet.iterator(); iter.hasNext(); ) {
+    		buf.append("\t<import-package package=\"" + iter.next() + "\"/>\n" );
+    	}
+    	for (Iterator iter = exportSet.iterator(); iter.hasNext(); ) {
+    		buf.append("\t<export-package package=\"" + iter.next() + "\"/>\n" );
+    	}
+    	if (!dependencies.isEmpty()) {
+    		buf.append("\t<dependencies>\n");
+    		for (Enumeration en = dependencies.elements(); en.hasMoreElements(); ) {
+    			buf.append("\t\t<bundle>\n");
+    			buf.append(XMLHelpers.emitTag("bundle-name", (String)en.nextElement(), 3));
+				buf.append(XMLHelpers.emitTag("bundle-group", (String)en.nextElement(), 3));
+				buf.append(XMLHelpers.emitTag("bundle-version", (String)en.nextElement(), 3));
+    			buf.append("\t\t</bundle>\n");
+    		}    		    		
+    		buf.append("\t</dependencies>\n");
+    	}
+    	buf.append("</bundle>");
+    	
+    	System.out.println("OBR:");
+    	System.out.println(buf.toString());
+    	
+    	System.out.println(bundledir + File.separatorChar + bname + "-" + bversion + ".obr");
+    	File obrfile = new File(bundledir + File.separatorChar + bname + "-"
+                + bversion + ".obr");
+    	BufferedWriter bwriter = new BufferedWriter(new FileWriter(obrfile));
+    	bwriter.write(buf.toString());
+    	bwriter.flush();
+    	
+    }
+    
+    
 
     /**
      * Returns the imported packages as a String compatible to the OSGi
@@ -391,14 +490,14 @@ public class Bundle
             deployosgijar = repolocal + File.separatorChar + bgroup
                     + File.separatorChar + "jars" + File.separatorChar
                     + osgijarfile;
+        
         else
             deployosgijar = bundledir + File.separatorChar + osgijarfile;
 
         System.out.println("DeployOSGiJar: " + deployosgijar);
         System.out.println("atts: "+atts);
         
-        
-        
+                
         // parse the bundle to generate the import/export, and activator set
         parseBundle(jarfile);
 
@@ -420,7 +519,7 @@ public class Bundle
         
         String[] attar = new String[attv.size()];
         attv.copyInto(attar);
-
+               
         // Now that we have the import, export it has to be merged
         // with the already created Manifest file inside the jar
         // to be backward compatible.
@@ -441,6 +540,7 @@ public class Bundle
 
         // delete tmp folder recursively
         JarFactory.deleteDirReq(tmpdir);
+
 
     }
 
