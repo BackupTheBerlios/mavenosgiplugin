@@ -51,6 +51,12 @@
         type="jar"
         project="${pom}"/> 
   
+  	<ant:echo>Deploying OBR File:</ant:echo>
+	<ant:copy file="${maven.osgi.obr.name}" todir="${maven.repo.local}/${pom.groupId}/jars" />
+
+
+
+  	
   </goal>
   
   <!--==================================================================-->
@@ -62,6 +68,10 @@
 
    <j:set var="maven.osgi.final.name" 
       value="${maven.build.dir}/${maven.final.name}.jar"/>
+      
+   <j:set var="maven.osgi.obr.name" 
+      value="${maven.build.dir}/${maven.final.name}.obr"/>
+      
   </goal>
   
   <goal name="osgi:jar" prereqs="osgi:init,java:jar" description="Build an OSGi jar file">

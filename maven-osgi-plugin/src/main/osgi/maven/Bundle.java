@@ -300,17 +300,19 @@ public class Bundle
     	Vector dependencies = new Vector();
 		
     	if (thirdparty) {
-    		
+
+    		// defaults for thirdparty
     		description = new String("thirdparty-jar " + bname);
     		sourceUrl = new String("unknown");
     		docUrl = new String("unknown");
     		
     	} else {
-    		
+    		    		
     		BufferedReader breader = new BufferedReader(new FileReader(new File("project.xml")));
     		
     		String line = breader.readLine();
     		
+    		// parse project.xml
     		while (line != null) {
     			if (line.indexOf("shortDescription") > -1) {    				    				
     				description = XMLHelpers.getTagContent(breader, line, "shortDescription");
@@ -338,6 +340,7 @@ public class Bundle
     		docUrl = new String("unknown");    		
     	}
 
+    	// set up OBR file 
     	buf.append("<bundle>\n");
     	buf.append(XMLHelpers.emitTag("bundle-name", bname, 1));
     	buf.append(XMLHelpers.emitTag("bundle-group", bgroup, 1));
@@ -368,19 +371,18 @@ public class Bundle
     	}
     	buf.append("</bundle>");
     	
-    	System.out.println("OBR:");
-    	System.out.println(buf.toString());
+    	// Debug output:
+    	// System.out.println("OBR:");
+    	// System.out.println(buf.toString());
     	
-    	System.out.println(bundledir + File.separatorChar + bname + "-" + bversion + ".obr");
     	File obrfile = new File(bundledir + File.separatorChar + bname + "-"
                 + bversion + ".obr");
     	BufferedWriter bwriter = new BufferedWriter(new FileWriter(obrfile));
     	bwriter.write(buf.toString());
     	bwriter.flush();
-    	
+    	   	    	
     }
-    
-    
+         
 
     /**
      * Returns the imported packages as a String compatible to the OSGi
@@ -479,7 +481,9 @@ public class Bundle
     public void createOSGiBundle(boolean deploy, String suffix, String atts)
             throws IOException, JarException
     {
-        String toaddsuffix = "";
+            
+    	
+    	String toaddsuffix = "";
         if (suffix != null) toaddsuffix = "-" + suffix;
 
         String jarfile = bundledir + File.separatorChar + bname + "-"
