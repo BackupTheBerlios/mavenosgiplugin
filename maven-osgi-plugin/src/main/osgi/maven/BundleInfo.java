@@ -92,6 +92,37 @@ public class BundleInfo
 
     }
 
+    public void thirdpartyOBR() {
+        String group = System.getProperty("groupId");
+        String name = System.getProperty("artifactId");
+        String version = System.getProperty("version");
+        String suffix = System.getProperty("suffix");
+        String atts = System.getProperty("attributes");
+        String pkgversion = System.getProperty("withpkgv");
+
+        if (name == null || version == null || group == null) {
+            System.out
+                    .println("Please specify at least a name for the package: \n");
+            System.out
+                    .println("   Usage: maven osgi:thirdparty-obr -DgroupId=<group> "
+                            + "-DartifactId=<name> -Dversion=<version>");
+            return;
+        }
+    	
+        try {
+			m_bundle = new Bundle(repolocal, bundledir, group, name, version,
+			        true);
+			m_bundle.generateOBR(null);
+			System.out.println("[echo] OBR file generated");
+            
+		} catch (NotFoundException e) {			
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        
+    }
+    
     public void thirdparty()
     {
 

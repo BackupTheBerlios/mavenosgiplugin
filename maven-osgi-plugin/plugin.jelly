@@ -28,6 +28,11 @@
       className="osgi.maven.BundleInfo"
       method="thirdparty"
     />
+    <define:jellybean
+      name="thirdparty-obr"
+      className="osgi.maven.BundleInfo"
+      method="thirdpartyOBR"
+    />
   </define:taglib>
 
   <!--==================================================================-->
@@ -53,9 +58,6 @@
   
   	<ant:echo>Deploying OBR File:</ant:echo>
 	<ant:copy file="${maven.osgi.obr.name}" todir="${maven.repo.local}/${pom.groupId}/jars" />
-
-
-
   	
   </goal>
   
@@ -300,6 +302,16 @@
 		<ant:echo>Import-Package: ${bi.importedPackages}</ant:echo>
 
 	</goal>
-	
 
+	<goal name="osgi:thirdparty-obr" description="generate a separate obr file for an existing osgi third-party jar">
+	
+		<bundleinfo:thirdparty-obr
+			var="bi"
+			thirdparty="jar"
+			bundleDir="${basedir}"
+			repositoryLocal="${maven.repo.local}"
+		/>
+		
+		
+	</goal>
 </project>

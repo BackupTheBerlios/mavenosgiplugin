@@ -291,23 +291,30 @@ public class Bundle
         
     }
     
-    private void generateOBR(File file) throws IOException {
+    protected void generateOBR(File file) throws IOException {
     	StringBuffer buf = new StringBuffer();
     	String description = null;
-    	String sourceUrl;
-    	String docUrl;    	
-    	String md5 = MD5.getHashString(file);
+    	String sourceUrl;    	
+    	String docUrl;   
+    	String md5;
+    	if (file == null) {
+    		md5 = MD5.getHashString(new File(bundledir + File.separatorChar + bname + "-" + bversion + ".jar"));
+    	} else {    		
+    		md5 = MD5.getHashString(file);
+    	}
     	Vector dependencies = new Vector();
 		
-    	if (thirdparty) {
-
+    	if (thirdparty || file == null) {    		
+    		
+    		
     		// defaults for thirdparty
     		description = new String("thirdparty-jar " + bname);
     		sourceUrl = new String("unknown");
     		docUrl = new String("unknown");
     		
     	} else {
-    		    		
+    		    	
+    		
     		BufferedReader breader = new BufferedReader(new FileReader(new File(bundledir + File.separatorChar + ".." + File.separatorChar + "project.xml")));
     		
     		String line = breader.readLine();
@@ -320,9 +327,9 @@ public class Bundle
     			
     			if (line.indexOf("dependency") > -1) {
     				String dependency = XMLHelpers.getTagContent(breader, line, "dependency");
-    				  				
-    				dependencies.add(XMLHelpers.getTagContent(dependency, "groupId"));
+    				
     				dependencies.add(XMLHelpers.getTagContent(dependency, "artifactId"));
+    				dependencies.add(XMLHelpers.getTagContent(dependency, "groupId"));    				
     				
     				String version = XMLHelpers.getTagContent(dependency, "version");
     				if (version.equals("${pom.currentVersion}")) {
