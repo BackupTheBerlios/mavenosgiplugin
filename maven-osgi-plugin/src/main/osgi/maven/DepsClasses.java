@@ -72,7 +72,6 @@ public class DepsClasses {
         try
         {
             clas = cpool.get(clname);
-
 	        CtClass[] interfaces = clas.getInterfaces();
 	        for (int i = 0; i < interfaces.length; i++) {
 	            if (interfaces[i].getName().equals(

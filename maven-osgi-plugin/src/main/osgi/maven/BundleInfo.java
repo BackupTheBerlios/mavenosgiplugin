@@ -69,6 +69,8 @@ public class BundleInfo
     
     private String updatelocation;
 
+    private String rtclpath;
+    
     private Bundle m_bundle;
 
     // sets as string
@@ -84,6 +86,8 @@ public class BundleInfo
     //jar to create -osgi.jar locally, or deploy for .maven/repository
     private String thirdpartyType = "jar";
 
+    static BundleVerifier bverifier;
+    
     public BundleInfo() {
 
     }
@@ -94,6 +98,8 @@ public class BundleInfo
     public void doExecute()
     {        
        
+        bverifier = new BundleVerifier(rtclpath);
+        
         try {
             parseJar();
         } catch (IOException e) {
@@ -246,6 +252,12 @@ public class BundleInfo
         this.project = project;
     }
 
+    public void setRtclpath(String rtclpath)
+    {
+        System.out.println("rtclpath: "+rtclpath);
+        this.rtclpath = rtclpath;
+    }
+    
     /**
      * jar to create -osgi.jar locally, or deploy for .maven/repository
      */

@@ -7,6 +7,31 @@
   </properties>
 
   <body>
+    <section name="Project-Properties">
+    
+		<table>
+	        <tr>
+	          <th>Property name</th>
+	          <th>Optional?</th>
+	          <th>Default</th>
+	          <th>Description</th>
+	        </tr>
+	        
+			<tr>
+	          <td>osgi.runtime.library</td>
+	          <td>Yes</td>
+	          <td>Current VM Classpath</td>
+	          <td>
+	            Can be set to <b>foundation</b> to take only
+	            the foundation class libraries.
+	          </td>
+	        </tr>
+	        
+	        
+	    </table>
+	    
+    </section>
+    
     <section name="OSGi-Properties">
       <table>
         <tr>
@@ -181,7 +206,7 @@
           <td>Yes</td>
           <td></td>
           <td>
-            Bundle-DocURL
+            Bundle-DocURL, use without http://, will be added later on.
           </td>
         </tr>        
 
@@ -208,7 +233,7 @@
           <td>Yes</td>
           <td>pom.organization.name</td>
           <td>
-            Bundle-Vendor
+            Bundle-Vendor, not yet configurable!
           </td>
         </tr>  
                      

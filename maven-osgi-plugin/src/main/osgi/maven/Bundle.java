@@ -129,10 +129,6 @@ public class Bundle
      */
     Set activatorSet = new TreeSet();
 
-    /**
-     * The BundleVerifier to check the dependencies.
-     */
-    private BundleVerifier bverifier = BundleVerifier.Instance();
 
     /**
      * A Bundle represents a normal jar file.
@@ -161,7 +157,7 @@ public class Bundle
 
         String path = bundledir + File.separatorChar + artifact.getName();
 
-        bverifier.getDepsClasses().addImportJar(path);
+        BundleInfo.bverifier.getDepsClasses().addImportJar(path);
     }
 
     /**
@@ -213,7 +209,7 @@ public class Bundle
         importArtifacts.add(artifact);
 
         // artifact to the javassist classpool
-        bverifier.getDepsClasses().addImportArtifact(repolocal, artifact);
+        BundleInfo.bverifier.getDepsClasses().addImportArtifact(repolocal, artifact);
     }
 
     /**
@@ -256,7 +252,7 @@ public class Bundle
 
                     if (!thirdparty)
                     {
-                        boolean impls = bverifier.getDepsClasses().doesImplementActivatorBundle(clname);
+                        boolean impls = BundleInfo.bverifier.getDepsClasses().doesImplementActivatorBundle(clname);
 
                         if (impls)
                         {
@@ -266,7 +262,7 @@ public class Bundle
 
                     }
 
-                    Collection classes = bverifier.getDepsClasses().getClassImports(clname);
+                    Collection classes = BundleInfo.bverifier.getDepsClasses().getClassImports(clname);
 
                     if (classes == null)
                         continue;
@@ -282,8 +278,8 @@ public class Bundle
                         // Make sure that the import is not in one of the Java
                         // libraries, and that it is in one of the dependent
                         // classes..
-                        if (!BundleVerifier.Instance().getRtClasses().isRtClass(refclass)
-                                && BundleVerifier.Instance().getDepsClasses().getClassImports(refclass) != null)
+                        if (!BundleInfo.bverifier.getRtClasses().isRtClass(refclass)
+                                && BundleInfo.bverifier.getDepsClasses().getClassImports(refclass) != null)
                         {
                             //System.out.println(refclass);
                             int index = refclass.lastIndexOf(".");
@@ -414,9 +410,19 @@ public class Bundle
             buf.append(XMLHelpers.emitTag("bundle-updatelocation", 
                     updatelocation +"/"+ bundlepath, 1));
         
-        buf.append(XMLHelpers.emitMultilineTag("bundle-sourceurl", sourceUrl, 1));
-        buf.append(XMLHelpers.emitMultilineTag("bundle-docurl", docUrl, 1));
+        // sourceurl
+        if (sourceUrl != null)
+            buf.append(XMLHelpers.emitMultilineTag("bundle-sourceurl", sourceUrl, 1));
+        else
+            buf.append(XMLHelpers.emitMultilineTag("bundle-sourceurl", "", 1));
         
+        // docurl
+        if (docUrl != null)
+            buf.append(XMLHelpers.emitMultilineTag("bundle-docurl", "http://"+docUrl, 1));
+        else
+            buf.append(XMLHelpers.emitMultilineTag("bundle-docurl", "", 1));
+        
+        // category
         if (category != null)
             buf.append(XMLHelpers.emitTag("bundle-category", category, 1));
         else

@@ -122,6 +122,7 @@
 			var="bi"
 			artifactGroup="${pom.groupId}"
 			artifactId="${pom.artifactId}"
+			rtclpath="${osgi.runtime.library}"
 			artifactVersion="${pom.currentVersion}"
 			apivendor="${pom.getProperty('obr.bundle.apivendor')}"
 			category="${pom.getProperty('osgi.bundle.category')}"
@@ -546,9 +547,9 @@
       	</j:if>
       	
       	<!-- osgi.bundle.classpath -->
-      	<j:if test="${pom.getProperty('osgi.bundle.classpath')!=null}">
+      	<!--<j:if test="${pom.getProperty('osgi.bundle.classpath')!=null}">
       		<ant:attribute name = "Bundle-Classpath"         value = "${pom.getProperty('osgi.bundle.classpath')}"/>
-      	</j:if>
+      	</j:if>-->
       	
       	<!-- osgi.bundle.nativecode -->
       	<j:if test="${pom.getProperty('osgi.bundle.nativecode')!=null}">
@@ -596,7 +597,7 @@
       	</j:if>
       	
       	<!-- bundle.classpath -->
-      	<ant:attribute name = "Bundle-ClassPath"   value = "${bundle_classpath}"/>
+      	<ant:attribute name = "Bundle-ClassPath"   value = ".,${bundle_classpath}"/>
       	
       	<!-- eclipse.require.bundle -->
       	<j:if test="${pom.name!=null}">

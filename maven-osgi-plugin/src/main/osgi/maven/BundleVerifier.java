@@ -33,9 +33,6 @@ import java.io.IOException;
 public class BundleVerifier
 {
 
-    /* bundleverifier as a singleton */
-    private static BundleVerifier bverifier = new BundleVerifier();
-
     private DepsClasses           depsclasses;
 
     private RtClasses             rtclasses;
@@ -44,29 +41,20 @@ public class BundleVerifier
      * BundleVerifier as a singleton, use Instance to get an instance.
      *
      */
-    private BundleVerifier()
+    public BundleVerifier(String rtclpath)
     {
 
         depsclasses = new DepsClasses();
 
         try
         {
-            rtclasses = new RtClasses();
+            rtclasses = new RtClasses(rtclpath);
         } catch (IOException ioe)
         {
             //TODO should inform the creater that no runtime available
         }
     }
 
-    /**
-     * BundleVerifier is instantiated only once.
-     * 
-     * @return
-     */
-    public static BundleVerifier Instance()
-    {
-        return bverifier;
-    }
 
     /**
      * Returns the Runtime environment libs reference.

@@ -38,8 +38,11 @@ public class RtClasses {
 
     private Vector systemJars = new Vector();
 
-    public RtClasses() throws IOException {
+    public RtClasses( String rtclpath) throws IOException {
 
+        if ( rtclpath != null && rtclpath.equals("foundation"))
+            SYSTEM_CP = false;
+        
         if (SYSTEM_CP) {
 
             ArrayList syslibpaths = new ArrayList();
