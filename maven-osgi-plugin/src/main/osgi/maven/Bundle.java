@@ -371,6 +371,11 @@ public class Bundle
     	buf.append("<bundle>\n");
     	buf.append(XMLHelpers.emitTag("bundle-name", bname, 1));
     	buf.append(XMLHelpers.emitTag("bundle-group", bgroup, 1));
+    	buf.append(XMLHelpers.emitTag("bundle-version", bversion, 1));
+    	
+    	// ok the uuid is repition, but to be compatible with knopflerfish
+    	buf.append(XMLHelpers.emitTag("bundle-uuid", bgroup+":"+bname+":"+bversion+":"));
+    	    	
     	buf.append(XMLHelpers.emitMultilineTag("bundle-description", description, 1));
     	
     	if (apivendor == null)
@@ -379,8 +384,14 @@ public class Bundle
     	    buf.append(XMLHelpers.emitTag("bundle-apivendor", apivendor, 1));
     	
     	buf.append(XMLHelpers.emitTag("bundle-vendor", vendor, 1));
-    	buf.append(XMLHelpers.emitTag("bundle-version", bversion, 1));    	  	    	    	
+    	
+    	
+    	
+    	// maybe we need here another tag
     	buf.append(XMLHelpers.emitTag("update-location", "localhost://" + repolocal, 1));
+    	buf.append(XMLHelpers.emitTag("bundle-updatelocation", 
+    	        "http://osgirepo.berlios.de/maven/repository/" + bgroup+"/jars/"+
+    	        bname+"-"+bversion+".jar", 1));
     	buf.append(XMLHelpers.emitMultilineTag("bundle-sourceurl", sourceUrl, 1));
     	buf.append(XMLHelpers.emitMultilineTag("bundle-docurl", docUrl, 1));
     	buf.append(XMLHelpers.emitTag("bundle-category", "General", 1));

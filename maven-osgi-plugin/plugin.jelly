@@ -134,7 +134,7 @@
       	<!-- OSGi-Extensions related to the standard manifest -->
       	<!--==================================================-->
       	<!-- osgie.manifest.mainclass -->
-      	<j:if test="${pom.getProperty('osgi.manifest.mainclass')!=null}">
+      	<j:if test="${pom.getProperty('osgie.manifest.mainclass')!=null}">
       		<ant:attribute name = "Main-Class"      value = "${pom.getProperty('osgie.manifest.mainclass')}"/>
       	</j:if>
       	
