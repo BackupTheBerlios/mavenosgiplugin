@@ -1,0 +1,295 @@
+<project
+	xmlns:maven="jelly:maven"
+	xmlns:jar="jelly:jar"
+	xmlns:j="jelly:core" 
+	xmlns:util="jelly:util" 
+	xmlns:ant="jelly:ant"
+	xmlns:artifact="artifact"
+	xmlns:define="jelly:define"
+	xmlns:bundleinfo="bundleinfo">
+
+  <!--==================================================================-->
+  <!-- Default goal : Builds a war file                                 -->
+  <!--==================================================================-->
+  <goal name="osgi" prereqs="osgi:jar"
+  	description="Build an OSGi jar file"/>
+  
+  <!--==================================================================-->
+  <!-- Definitions                                                      -->
+  <!--==================================================================-->  
+  <define:taglib uri="bundleinfo">
+    <define:jellybean
+      name="bundleinfo"
+      className="osgi.maven.BundleInfo"
+      method="doExecute"
+    />
+    <define:jellybean
+      name="thirdparty"
+      className="osgi.maven.BundleInfo"
+      method="thirdparty"
+    />
+  </define:taglib>
+
+  <!--==================================================================-->
+  <!-- Helper-goals                                                     -->
+  <!--==================================================================-->  
+  <ant:tstamp>
+    <ant:format property = "bundle.date" 
+            pattern  = "EE MMMM d yyyy, HH:mm:ss"
+            locale   = "en"/>
+   </ant:tstamp>
+
+  <!--==================================================================-->
+  <!-- Install the osgi in the local repository                         -->
+  <!--==================================================================-->    
+  <goal name="osgi:install"
+        prereqs="osgi:jar"
+        description="Install the osgi jar in the local repository">
+     
+     <artifact:install
+        artifact="${maven.osgi.final.name}"
+        type="jar"
+        project="${pom}"/> 
+  
+  </goal>
+  
+  <!--==================================================================-->
+  <!-- Builds an OSGi jar file                                          -->
+  <!--==================================================================-->
+
+  <goal name="osgi:init" 
+    description="Initialize filesystem and other resources for an osgi build">
+
+   <j:set var="maven.osgi.final.name" 
+      value="${maven.build.dir}/${maven.final.name}.jar"/>
+  </goal>
+  
+  <goal name="osgi:jar" prereqs="osgi:init,java:jar" description="Build an OSGi jar file">
+
+    <ant:echo>Building OSGi jar ${maven.final.name}</ant:echo>
+
+    <ant:available property="maven.osgi.manifest.available"
+      file="${maven.osgi.manifest}"/>
+
+    <!-- jar task used for now due to problems with ejb jar not including 
+         files other than class files -->
+    <ant:jar
+      jarfile="${maven.osgi.final.name}"
+      index="${maven.osgi.index}">
+      
+      <j:if test="${maven.osgi.manifest.available}">
+        <ant:setProperty name="manifest" value="${maven.osgi.manifest}" />
+      </j:if>
+
+
+      <ant:manifest>
+        <ant:attribute name="Built-By" value="${user.name}"/>
+        <ant:attribute name="Created-By" value="Apache Jakarta Maven"/>
+        <!--<ant:attribute name="Package" value="${pom.package}"/>-->
+           	
+
+      	<!--==================================================-->
+      	<!-- generate the import, export, bundleactivator     -->
+      	<!--==================================================-->
+		<bundleinfo:bundleinfo
+			var="bi"
+			artifactGroup="${pom.groupId}"
+			artifactId="${pom.artifactId}"
+			artifactVersion="${pom.currentVersion}"
+			bundleDir="${maven.build.dir}"
+			repositoryLocal="${maven.repo.local}"
+			project="${pom}"
+		/>
+
+      	<!--==================================================-->
+      	<!-- OSGi-Extensions related to the standard manifest -->
+      	<!--==================================================-->
+      	<!-- osgie.manifest.mainclass -->
+      	<j:if test="${pom.getProperty('osgie.manifest.mainclass')!=null}">
+      		<ant:attribute name = "Main-Class"      value = "${pom.getProperty('osgie.manifest.mainclass')}"/>
+      	</j:if>
+      	
+      	<!--==================================================-->
+      	<!-- OSGi-Standard properties                         -->
+      	<!--==================================================-->
+      	<!-- osgi.bundle.vendor -->
+      	<j:if test="${pom.organization.name!=null}">
+      		<j:set var="bundle_vendor" value="${pom.organization.name}" />
+      	</j:if>
+      	<j:if test="${pom.getProperty('osgi.bundle.vendor')!=null}">
+      		<j:set var="bundle_vendor" value = "${pom.getProperty('osgi.bundle.vendor')}"/>
+      	</j:if>
+      	<j:if test="${bundle_vendor!=null}">
+      		<ant:attribute name = "Bundle-Vendor"      value = "${bundle_vendor}"/>
+      	</j:if>
+      	
+      	<!-- osgi.bundle.docurl -->
+      	<j:if test="${pom.organization.url!=null}">
+      		<j:set var="bundle_docurl" value="${pom.organization.url}" />
+      	</j:if>
+      	<j:if test="${pom.getProperty('osgi.bundle.docurl')!=null}">
+      		<j:set var="bundle_docurl" value = "${pom.getProperty('osgi.bundle.docurl')}"/>
+      	</j:if>
+      	<j:if test="${bundle_docurl!=null}">
+      		<ant:attribute name = "Bundle-DocURL"      value = "${bundle_docurl}"/>
+      	</j:if>      	
+      	
+      	<!-- osgi.bundle.version -->
+      	<j:if test="${pom.currentVersion!=null}">
+      		<j:set var="bundle_version" value="${pom.currentVersion}" />
+      	</j:if>
+      	<j:if test="${pom.getProperty('osgi.bundle.version')!=null}">
+      		<j:set var="bundle_version" value="${pom.getProperty('osgi.bundle.version')}" />
+      	</j:if>
+      	<j:if test="${bundle_version!=null}">
+      		<ant:attribute name = "Bundle-Version"      value = "${bundle_version}"/>
+      	</j:if>
+      	
+
+      	<!-- osgi.bundle.name -->
+      	<j:if test="${pom.name!=null}">
+      		<j:set var="bundle_name" value="${pom.name}" />
+      	</j:if>
+      	<j:if test="${pom.getProperty('osgi.bundle.name')!=null}">
+      		<j:set var="bundle_name" value = "${pom.getProperty('osgi.bundle.name')}"/>
+      	</j:if>
+      	<j:if test="${bundle_name!=null}">
+      		<ant:attribute name = "Bundle-Name"      value = "${bundle_name}"/>
+      	</j:if>
+      	
+      	<!-- osgi.bundle.description -->
+      	<j:if test="${pom.shortDescription!=null}">
+      		<j:set var="bundle_desc" value="${pom.shortDescription}" />
+      	</j:if>
+      	<j:if test="${pom.getProperty('osgi.bundle.description')!=null}">
+      		<j:set var="bundle_desc" value = "${pom.getProperty('osgi.bundle.description')}"/>
+      	</j:if>
+      	<j:if test="${bundle_desc!=null}">
+      		<ant:attribute name = "Bundle-Description"      value = "${bundle_desc}"/>
+      	</j:if>
+      	      	
+      	<!-- osgi.bundle.activator -->
+      	<j:if test="${bi.bundleActivator!=null}">
+      		<j:set var="bundle_activator" value="${bi.bundleActivator}" />
+      	</j:if>
+      	<j:if test="${pom.getProperty('osgi.bundle.activator')!=null}">
+      		<j:set var="bundle_activator" value="${pom.getProperty('osgi.bundle.activator')}" />
+      	</j:if>
+      	<j:if test="${bundle_activator!=null}">
+      		<ant:attribute name = "Bundle-Activator"      value = "${bundle_activator}"/>
+      	</j:if>
+      	<ant:echo>Bundle-Activator: ${bundle_activator}</ant:echo>
+      	
+      	<!-- osgi.bundle.category -->
+      	<j:if test="${pom.getProperty('osgi.bundle.category')!=null}">
+      		<ant:attribute name = "Bundle-Category"       value = "${pom.getProperty('osgi.bundle.category')}"/>
+      	</j:if>
+      	
+      	<!-- osgi.bundle.config -->
+      	<j:if test="${pom.getProperty('osgi.bundle.config')!=null}">
+      		<ant:attribute name = "Bundle-Config"         value = "${pom.getProperty('osgi.bundle.config')}"/>
+      	</j:if>
+      	
+      	<!-- osgi.bundle.classpath -->
+      	<j:if test="${pom.getProperty('osgi.bundle.classpath')!=null}">
+      		<ant:attribute name = "Bundle-Classpath"         value = "${pom.getProperty('osgi.bundle.classpath')}"/>
+      	</j:if>
+      	
+      	<!-- osgi.bundle.nativecode -->
+      	<j:if test="${pom.getProperty('osgi.bundle.nativecode')!=null}">
+      		<ant:attribute name = "Bundle-NativeCode"         value = "${pom.getProperty('osgi.bundle.nativecode')}"/>
+      	</j:if>
+      	
+      	<!-- osgi.export.service -->
+      	<j:if test="${pom.getProperty('osgi.export.service')!=null}">
+      		<ant:attribute name = "Export-Service"         value = "${pom.getProperty('osgi.export.service')}"/>
+      	</j:if>
+      	
+      	<!-- osgi.import.service -->
+      	<j:if test="${pom.getProperty('osgi.import.service')!=null}">
+      		<ant:attribute name = "Import-Service"         value = "${pom.getProperty('osgi.import.service')}"/>
+      	</j:if>
+      	
+      	<!-- osgi.export.package -->
+      	<j:if test="${bi.exportedPackages!=null}">
+      		<j:set var="export_package" value="${bi.exportedPackages}" />
+      	</j:if>
+      	<j:if test="${pom.getProperty('osgi.export.package')!=null}">
+      		<j:set var="export_package" value="${pom.getProperty('osgi.export.package')}" />
+      	</j:if>
+      	<j:if test="${export_package!=null and export_package!=''}">
+      		<ant:attribute name = "Export-Package"         value = "${export_package}"/>
+      	</j:if>
+      	<ant:echo>Export-Package: ${export_package}</ant:echo>
+      	
+      	<!-- osgi.import.package -->
+      	<j:if test="${bi.importedPackages!=null}">
+      		<j:set var="import_package" value="${bi.importedPackages}" />
+      	</j:if>
+      	<j:if test="${pom.getProperty('osgi.import.package')!=null}">
+      		<j:set var="import_package" value="${pom.getProperty('osgi.import.package')}" />
+      	</j:if>
+      	<j:if test="${import_package!=null and import_package!=''}">
+      		<ant:attribute name = "Import-Package"         value = "${import_package}"/>
+      	</j:if>
+      	<ant:echo>Import-Package: ${import_package}</ant:echo>
+      	
+        <!-- osgi.dynimport.package -->
+      	<j:if test="${pom.getProperty('osgi.dynimport.package')!=null}">
+      		<j:set var="dynimport_package" value="${pom.getProperty('osgi.dynimport.package')}" />
+      	</j:if>
+      	<j:if test="${dynimport_package!=null and dynimport_package!=''}">
+      		<ant:attribute name = "DynamicImport-Package"         value = "${dynimport_package}"/>
+      	</j:if>
+      	<ant:echo>DynamicImport-Package: ${dynimport_package}</ant:echo>
+      	
+      	<!--=====================================================-->
+      	<!-- OSGi-Extensions (no from manifest and OSGi standard -->
+      	<!--=====================================================-->
+      	<ant:attribute name = "Build-Date"            value = "${bundle.date}"/>
+        
+        
+      </ant:manifest>
+    
+      <!--<ant:fileset dir="${maven.src.dir}"/>-->
+      <ant:fileset dir="${maven.build.dest}"
+        includes="**">
+      </ant:fileset>
+
+    </ant:jar>
+
+  </goal>
+	
+	<!--=====================================================-->
+    <!-- thirdparty package generation                       -->
+    <!--=====================================================-->
+	<goal name="osgi:thirdparty-jar" description="generate an osgi package out of a third-party package">
+		
+		<bundleinfo:thirdparty
+			var="bi"
+			thirdparty="jar"
+			bundleDir="${basedir}"
+			repositoryLocal="${maven.repo.local}"
+		/>
+		<ant:echo>osgi deployed: ${bi.deployedOSGiJar}</ant:echo>
+		<ant:echo>Export-Package: ${bi.exportedPackages}</ant:echo>
+		<ant:echo>Import-Package: ${bi.importedPackages}</ant:echo>
+	</goal>
+	
+	<goal name="osgi:thirdparty-deploy" description="generate an osgi package out of a third-party package and deploy it in .maven/repository">
+		
+		<bundleinfo:thirdparty
+			var="bi"
+			thirdparty="deploy"
+			bundleDir="${basedir}"
+			repositoryLocal="${maven.repo.local}"
+		/>
+			
+		<ant:echo>osgi deployed: ${bi.deployedOSGiJar}</ant:echo>
+		<ant:echo>Export-Package: ${bi.exportedPackages}</ant:echo>
+		<ant:echo>Import-Package: ${bi.importedPackages}</ant:echo>
+
+	</goal>
+	
+
+</project>

@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<!-- 
+/*
+ * 
+ */
+ -->
+ 
+ <document>
+  <properties>
+    <title>maven-osgi-plugin changes</title>
+    <author email="frei@inf.ethz.ch">Andreas Frei</author>
+  </properties>
+  <body>
+
+    <release version="0.3.2" date="2004-11-09" description="add new properties, docu"> 
+      <action dev="andfrei" type="add">
+		We moved to BerliOS.de.
+      </action>     
+    </release>
+    
+    <release version="0.3.1" date="2004-06-17" description="add new properties, docu"> 
+      <action dev="andfrei" type="fix">
+		Changed groupid to maven.
+      </action> 
+      <action dev="andfrei" type="add">
+		Updated documentation: mavenizer for knopflerfish, osgi.jar
+      </action>  
+      <action dev="andfrei" type="add">
+		Added Bundle-NativeCode Property as osgi.bundle.nativecode
+      </action>  
+      <action dev="andfrei" type="add">
+		Added DynamicImport-Package Property as osgi.dynimport.package
+      </action>       
+    </release>
+    
+    <release version="0.2.3" date="2004-04-23" description="fix, export-specversion">
+      <action dev="andfrei" type="add">
+		osgi:jar, osgi:install generates automatically for the Export-Package 
+		the specification-version.
+      </action>
+      <action dev="andfrei" type="fix">
+		Solved a bug in thirdparty-lib OSGi generation.
+      </action>         
+    </release>
+    
+    <release version="0.2.2" date="2004-04-21" description="automatic package generation">
+      <action dev="andfrei" type="fix">
+		There was a bug in the Import Verification.
+      </action>         
+    </release>
+    
+    <release version="0.2.1" date="2004-04-20" description="automatic package generation">
+      <action dev="andfrei" type="add">
+		Added two new goals: osgi:thirdparty-jar, osgi:thirdparty-deploy to generate
+		an OSGi package with the Import-,Export-Package attributes in the Manifest.
+      </action>         
+    </release>
+
+    <release version="0.1.0" date="2004-04-12" description="first release">
+      <action dev="andfrei" type="update">
+	  	First release for maven-osgi-plugin, supports generation of
+	  	OSGi compatible Manifest entries.
+      </action>           
+    </release>
+
+  </body>
+</document>

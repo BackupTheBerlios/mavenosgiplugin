@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<document>
+
+  <properties>
+    <title>OSGi Development and Building</title>
+    <author email="frei@inf.ethz.ch">Andreas Frei</author>
+  </properties>
+
+  <body>
+  
+    <section name="OSGi Development and Building">
+    <p>
+    	Using this maven-osgi-plugin to build OSGi bundles
+    	is not the only way to do it, see <a href="http://www.knopflerfish.org/programming.html#custom">Knopflerfish</a>
+    	which uses ant to build bundles.
+    </p>
+    <p>
+    	By using this plugin you can benefit from the maven infrastructure
+    	with site generation and the many generated reports. Great advantages
+    	are also the simple project.xml files and dependencies declarations.
+    	We also discovered,	when using maven in general, a stronger 
+    	separation of packages in <b>APIs, and Implementations</b>. The structure 
+    	of the code gets much clearer for new developers and writing 
+    	documentation as xdocs or javadoc gets fun.
+    </p>
+    <p>
+    	OSGi is predestinated with its many different services for such
+    	a project management tool like maven. Every service defined in
+    	OSGi can be generated into its own bundle and therefore also a
+    	package for maven. Whereas OSGi supports the API different 
+    	implementations for the framework and services are already available.
+    	A developer or company who doesn't want to compile against
+    	a concreate implementation could only use the API of OSGi and
+    	later on at deployment/test use a concreate implementation.
+    	Unfortunately the separation into APIs and Implementation
+    	has not yet progressed or started for OSGi.
+    </p>
+    <p>
+    	The OSGi Alliance supports the free available API for the
+    	framework and services but packages it into one big .jar file.
+    	To overcome this problem we propose and support on this
+    	page the project.xml files for the free available OSGi-API. 
+    	Maybe one time the API packages could be made available to 
+    	<a href="http://www.ibiblio.org/maven">ibiblio/maven</a> but the 
+    	licensing is not clear about this, in case you have more information
+    	about the license please inform us.
+    </p>
+    
+    <subsection name="Getting started with mavenized OSGi bundles">
+    <p>
+    	You are not required to set up this full infrastructure if you
+    	only want to build some basic bundles, test the plugin or when your
+    	are happy with another buildsystem. In case you are going to use
+    	many services from OSGi we recommend to take the time for installation.
+    	When you <a href="install.html">installed</a> this plugin, you already
+    	got the OSGi framework API which you can find in your local maven 
+    	repository under .maven/repository/osgi/jars/osgi-framework-1.2.jar.
+    </p>
+    <p>
+    	To mavenize OSGi four steps are required:
+    	<ol>
+    		<li>install the <a href="install.html">maven-osgi-plugin</a></li>
+    		<li>download and unpackage the osgi.jar from the 
+    			<a href="http://osgi.org/resources/spec_download.asp">OSGi Alliance</a>,</li>
+    		<li>download and unpackage the <a href="resources/osgi_mavenize.tar">osgi_mavenize.tar</a> 
+    			<b>inside</b> the previously unpackaged osgi.jar directory,</li>
+    		<li>mavenize one of your OSGi implementation.</li>
+    	</ol>
+    	
+    	<p>
+    		Currently we only support a view of the OSGi services in maven.
+    		In case the one you need is missing inform 
+    		<a href="mailto:frei@inf.ethz.ch">us</a> and we will
+    		added it to the osgi_mavenize.tar or send us the project.xml.
+    	</p>
+    	
+    	<p>
+    		To mavenize an OSGi implementation we currently support following
+    		implementation. Send us a link in case yours is also mavenized
+    		or you have a similar osgi_impl_mavenize.tar.
+    	</p>
+    	
+    	<table>
+    	
+    		<tr><th>OSGi Implementation</th><th>mavenize.tar</th><th>Description</th><th>supported services</th></tr>
+    		
+    		<tr>
+    			<td><a href="http://knopflerfish.org">Knopflerfish</a></td>
+    			<td><a href="resources/osgi_kf_mavenize.tar">osgi_kf_mavenize.tar</a></td>
+    			<td>unpack inside the knopflerfish root folder, call inside kf/osgi dir maven</td>
+    			<td>framework</td>
+    		</tr>
+    		
+    		<tr>
+    			<td><a href="http://oscar-osgi.sourceforge.net">OSCAR</a></td>
+    			<td></td>
+    			<td></td>
+    			<td></td>
+    		</tr>
+    		
+    		<tr>
+    			<td><a href="http://www-306.ibm.com/software/wireless/smf/">IBM SMF</a></td>
+    			<td></td>
+    			<td></td>
+    			<td></td>
+    		</tr>
+    		
+    		<tr>
+    			<td><a href="http://www.eclipse.org/equinox">Eclipse-Equinox</a></td>
+    			<td></td>
+    			<td></td>
+    			<td></td>
+    		</tr>
+    		
+    	</table>
+    </p>
+    
+    </subsection>
+    	
+    </section>
+    
+ </body>
+</document>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Maven-OSGi Plugin">
+
+  <title>Maven-OSGi Plugin</title>
+
+  <body>
+    <links>
+      <item name="OSGi Repository"  href="http://osgirepo.berlios.de"/>
+      <item name="Maven"      		href="http://maven.apache.org"/>
+      <item name="Jelly"      		href="http://jakarta.apache.org/commons/jelly"/>
+    </links>
+    
+    <menu name="Overview">
+      <item name="Goals"      	href="/goals.html" />
+      <item name="Properties" 	href="/properties.html" />
+      <item name="Install"		href="/install.html" />
+      <item name="OSGi Dev/Build" href="/osgidevandbuild.html" />
+    </menu>    
+    
+    <menu name="Project Admin">
+<!--		<item name="Mailing Lists" 					href="https://developer.berlios.de/mail/?group_id=2534"/> -->
+		<item name="Project Team"					href="/team-list.html" />
+		<item name="berliOS Services"				href="https://developer.berlios.de/projects/mavenosgiplugin" />
+	</menu>
+	
+  </body>
+</project>

@@ -1,0 +1,160 @@
+<?xml version="1.0"?>
+<document>
+
+  <properties>
+    <title>Maven-OSGi Goals</title>
+    <author email="frei@inf.ethz.ch">Andreas Frei</author>
+  </properties>
+
+  <body>
+  
+    <section name="Goals">
+    
+      <table>        
+        <tr><th>Goal</th><th>Properties</th><th>Description</th></tr>
+        
+        <tr>
+          <td>osgi</td>
+          <td></td>
+          <td>
+            Generates an osgi jar package, osgi:jar.
+          </td>
+        </tr>
+        
+        <tr>
+          <td>osgi:jar</td>
+          <td>-Dwithpkgv</td>
+          <td>
+            Generates an osgi jar package into the target directory.
+          </td>
+        </tr>
+      
+        <tr>
+          <td>osgi:install</td>
+          <td>-Dwithpkgv</td>
+          <td>
+            Generates and installs an osgi jar package into the repository.
+          </td>
+        </tr>  
+        
+        <tr>
+          <td>osgi:thirdparty-jar</td>
+          <td>-DgroupId=_grp_ -DartifactId=_art_ -Dversion=_ver_ -Dattributes=[export],[import] -Dsuffix=_s_</td>
+          <td>
+            Generates an osgi jar package out of a thirdparty package by
+            adding the <b>Import-Package, Export-Package</b>.
+            Replaces the package per default, use -Dsuffix to generate a new
+            one.
+          </td>
+        </tr>
+        
+        <tr>
+          <td>osgi:thirdparty-deploy</td>
+          <td>-DgroupId=_grp_ -DartifactId=_art_ -Dversion=_ver_ -Dattributes=[export],[import] -Dsuffix=_s_</td>
+          <td>
+            Generates an osgi jar package out of a thirdparty package by
+            adding the <b>Import-Package, Export-Package</b>.
+            Replaces the package per default, use <b>-Dsuffix</b> to generate a new
+            one.
+            <br/>
+            Deploys the package into the .maven/repository
+          </td>
+        </tr>
+        
+      </table>
+      
+    </section>
+    
+    <section name="Description">
+    
+    	<h3>osgi:thirdparty-jar</h3>
+		<p>
+		This goal generates an OSGi jar out of a thirdparty library.
+		This way the jar does not have to be included in another
+		bundle and exported. 
+		</p>
+		<p>
+		By merging the existing META-INF/MANIFEST with an
+		Export-Package and Import-Package the jar file is backward
+		compatible and also an OSGi bundle.
+		</p>
+		<p>
+		The original jar file will be changed this way. 
+		To keep the original jar file unchanged set the suffix property.
+		</p>
+		
+		<p>Example: Replaces the <code>antenna-0.9.2.jar</code> located in 
+		   the current directory with the corresponding OSGi jar:
+		   <source>  $ ls -l 
+  -rw-r--r--  1 muellerr users  58324 Jul 18 17:08 antenna-0.9.12.jar
+  
+  $ maven osgi:thirdparty-jar -DgroupId=j2me -DartifactId=antenna -Dversion=0.9.12
+  
+  $ ls -l
+  -rw-r--r--  1 muellerr users  59142 Jul 18 17:10 antenna-0.9.12.jar</source></p>
+		
+		<h3>osgi:thirdparty-deploy</h3>
+    	<p>
+    		With this deploy goal a thirdparty can be directly generated
+    		from any directory to the specified .maven/repository artifact
+    		directory.
+    		Quite usefule when you have downloaded a thirdparty library
+    		and you want to make an OSGi bundle out of it and placed in
+    		the maven repository.
+    	</p>
+    	<p>
+			The parameters are the same as for the thirdparty-jar.
+    	</p>
+    
+    	<subsection name="Properties">
+    		
+    		  <table>        
+        		<tr>
+        			<th>Parameters</th>
+        			<th>Optional/Default</th>
+        			<th>Description</th>
+        		</tr>
+        		
+        		<tr>
+        			<td>-Dwithpkgv</td>
+        			<td>yes/false</td>
+        			<td>Setting this property allows the generation
+        			of specification-version information in the Export-
+        			Package. Not yet for Import-Package.</td>
+        		</tr>
+        		<tr>
+          			<td>-DgroupId=_grp_ -DartifactId=_art_ -Dversion=_ver_</td>
+			        <td>No</td>
+			        <td>
+						Specify the the jar file, you should be located in the
+						same directory. 	
+			        </td>
+			    </tr>
+			    <tr>
+          			<td>-Dsuffix=_suffix_</td>
+			        <td>Yes/none</td>
+			        <td>
+						Per default, the original .jar file will be replaced with
+						the changed manifest.
+						By setting the suffix a new file-suffix.jar is generated
+						and the original is unchanged.
+			        </td>
+			    </tr>
+			   	<tr>
+          			<td>-Dattributes=[export],[import]</td>
+			        <td>Yes/export,import</td>
+			        <td>
+						Per default, the attributes are set to export,import. There
+						may cases where we don't want to have the import for example
+						when we are sure that package will never be used.
+			        </td>
+			    </tr>
+        		
+    	      </table>
+ 
+    	</subsection>
+    	
+    </section>
+    
+ </body>
+</document>

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+
+  <properties>
+    <title>Maven-OSGi Properties</title>
+    <author email="frei@inf.ethz.ch">Andreas Frei</author>
+  </properties>
+
+  <body>
+    <section name="Maven-OSGi Properties">
+      <table>
+        <tr>
+          <th>Property name</th>
+          <th>Optional?</th>
+          <th>Default</th>
+          <th>OSGi-Standard</th>
+        </tr>
+        <tr>
+          <td>osgi.bundle.vendor</td>
+          <td>Yes</td>
+          <td>pom.organization.name</td>
+          <td>
+            Bundle-Vendor
+          </td>
+        </tr>
+        <tr>
+          <td>osgi.bundle.docurl</td>
+          <td>Yes</td>
+          <td>pom.organization.url</td>
+          <td>
+            Bundle-DocURL
+          </td>
+        </tr>
+        <tr>
+          <td>osgi.bundles.activator</td>
+          <td>Yes</td>
+          <td>
+          	Parses all project packages and searches for the
+          	ONE implementing BundleActivator. Specify this
+          	property if you have more than one Activator in
+          	your project.
+          </td>
+          <td>
+            Bundle-Activator
+          </td>
+        </tr>    
+        <tr>
+          <td>osgi.bundle.name</td>
+          <td>Yes</td>
+          <td>pom.name</td>
+          <td>
+            Bundle-Name
+          </td>
+        </tr>
+        <tr>
+          <td>osgi.bundle.version</td>
+          <td>Yes</td>
+          <td>pom.currentVersion</td>
+          <td>
+            Bundle-Version
+          </td>
+        </tr>  
+        <tr>
+          <td>osgi.bundle.description</td>
+          <td>Yes</td>
+          <td>pom.shortDescription</td>
+          <td>
+            Bundle-Description
+          </td>
+        </tr>                                     
+        <tr>
+          <td>osgi.bundle.category</td>
+          <td>Yes</td>
+          <td></td>
+          <td>
+            Bundle-Category
+          </td>
+        </tr>   
+        <tr>
+          <td>osgi.bundle.config</td>
+          <td>Yes</td>
+          <td></td>
+          <td>
+            Bundle-Config
+          </td>
+        </tr>   
+        <tr>
+          <td>osgi.bundle.classpath</td>
+          <td>Yes</td>
+          <td></td>
+          <td>
+            Bundle-Classpath
+          </td>
+        </tr>
+        <tr>
+          <td>osgi.bundle.nativecode</td>
+          <td>Yes</td>
+          <td></td>
+          <td>
+            Bundle-NativeCode
+          </td>
+        </tr>
+        <tr>
+          <td>osgi.export.service</td>
+          <td>Yes</td>
+          <td></td>
+          <td>
+            Export-Service
+          </td>
+        </tr>           
+        <tr>
+          <td>osgi.import.service</td>
+          <td>Yes</td>
+          <td></td>
+          <td>
+            Import-Service
+          </td>
+        </tr>           
+        <tr>
+          <td>osgi.export.package</td>
+          <td>Yes</td>
+          <td>
+          	Parses the project to export per default all 
+          	internal packages.
+          </td>
+          <td>
+            Export-Package
+          </td>
+        </tr>   
+        <tr>
+          <td>osgi.import.package</td>
+          <td>Yes</td>
+          <td>
+          	Parses the project to import per default all 
+          	imported packages.
+          </td>
+          <td>
+            Import-Package
+          </td>
+        </tr>
+        <tr>
+          <td>osgi.dynimport.package</td>
+          <td>Yes</td>
+          <td>
+          	Specify the packages to be dynamically imported.
+          </td>
+          <td>
+            DynamicImport-Package
+          </td>
+        </tr> 
+                                        
+      </table>
+    </section>
+  </body>
+</document>

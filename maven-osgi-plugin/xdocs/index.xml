@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<!-- 
+/*
+ * 
+ */
+ -->
+
+<document>
+
+  <properties>
+    <title>Maven-OSGi Plugin</title>
+    <author email="frei@inf.ethz.ch">Andreas Frei</author>
+  </properties>
+
+	<body>
+  	<section name="Maven-OSGi Plugin">
+		<p>
+			This is a first Maven-OSGi plugin to generate the manifest for
+			OSGi bundles. Currently only a few, the most important, bundle
+			properties are supported.
+		</p>
+
+		<p>
+			Please write an <a href="mailto:frei@inf.ethz.ch">email</a> if 
+			you are missing some important properties.
+		</p>
+		</section>
+
+		<section name="Example of a project.xml">
+		<p>
+			By specifying the OSGi properties the default settings will be
+			overwritten. Example 1 overwrites some defaults whereas
+			example 2 uses a default. It can be seen in example 2
+			from a normal project.xml a valid OSGi Bundle can be generated.
+		</p>
+		<p>
+			In the extend (<extend>../project.xml</extend>) defaults for
+			the vendor, docurl have been set.
+		</p>
+		<p>
+			The generated Manifest would then look like the one below.
+		</p>
+		<table>
+			<tr><th>Example 1 - overwriting defaults</th></tr>
+		</table>
+<source><![CDATA[
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project>
+
+	<extend>${basedir}/../project.xml</extend>
+	
+	<groupId>jadabs<groupId>
+	<id>logging</id>
+	<name>Logging-IKS</name>
+	<currentVersion>1.2</currentVersion>
+
+  	<shortDescription>Logging IKS OSGi bundle</shortDescription>
+
+	<properties>
+		<osgi.bundle.vendor>ETHZ-IKS</osgi.bundle.vendor>
+		<osgi.bundle.docurl>http://www.iks.inf.ethz.ch/</osgi.bundle.docurl>
+		<osgi.bundle.version>1.2</osgi.bundle.version>
+		<osgi.bundle.name>loggingbundle</osgi.bundle.name>
+		<osgi.export.package>org.osgi.logging;specification-version=1.2</osgi.export.package>
+		<osgi.export.service>org.osgi.logging.Logger</osgi.export.service>
+	</properties>
+
+</project>
+]]></source>
+	
+		<table>
+			<tr><th>Example 2 - using defaults</th></tr>
+		</table>
+<source><![CDATA[
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project>
+
+	<extend>${basedir}/../project.xml</extend>
+
+	<groupId>jadabs<groupId>
+	<id>logging</id>
+	<name>Logging-IKS</name>
+	<currentVersion>1.2</currentVersion>
+
+  	<shortDescription>Logging IKS OSGi bundle</shortDescription>
+
+</project>
+]]></source>
+
+		<table>
+			<tr><th>Automatically generated META-INF/MANIFEST.MF in the jar</th></tr>
+		</table>
+<source><![CDATA[
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.5.3 
+Created-By: Apache Jakarta Maven
+Built-By: andfrei
+Bundle-Vendor: ETHZ-IKS
+Bundle-DocURL: http://www.iks.inf.ethz.ch/
+Bundle-Version: 1.2
+Bundle-Name: Logging-IKS
+Bundle-Description: Logging IKS OSGi bundle
+Export-Package: ch.ethz.iks.logger
+Build-Date: Fri June 11 2004, 18:37:21
+]]></source>
+
+	</section>
+
+	</body>
+</document>

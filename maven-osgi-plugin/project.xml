@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project>
+
+  <pomVersion>3</pomVersion>
+  
+  <groupId>maven</groupId>
+  <id>maven-osgi-plugin</id>
+  <currentVersion>0.3.2</currentVersion>
+  
+  <name>Maven OSGi Plugin</name>
+  
+  <organization>
+    <name>ETHZ-IKS</name>
+    <url>http://www.iks.inf.ethz.ch</url>
+    <logo>/images/logo_ethz_iks.jpg</logo>
+  </organization>
+  
+<!--  
+  <logo>/images/maven-osgi-plugin.jpg</logo>
+-->
+
+  <inceptionYear>2004</inceptionYear>
+  <shortDescription>An OSGi Maven plugin to generate the manifest.</shortDescription>
+
+  <developers>
+    <developer>
+      <name>Andreas Frei</name>
+      <id>andfrei</id>
+      <email>frei@inf.ethz.ch</email>
+      <url>http://www.inf.ethz.ch/~frei/</url>
+      <timezone>+1</timezone>
+      <organization>ETHZ</organization>
+    </developer>
+  </developers>
+  
+	<siteAddress>shell.berlios.de</siteAddress>
+  	<siteDirectory>/home/groups/mavenosgiplugin/htdocs</siteDirectory>
+	<distributionDirectory>/home/groups/osgirepo/htdocs/maven/repository</distributionDirectory>
+
+  	<repository>
+    	<connection>
+      		scm:cvs:ext:afrei@cvs.mavenosgiplugin.berlios.de:/cvsroot/mavenosgiplugin:maven-osgi-plugin
+    	</connection>
+  	</repository>
+  
+  <build>
+
+	<sourceDirectory>${basedir}/src/main</sourceDirectory>
+	<!-- <unitTestSourceDirectory>${basedir}/src/test</unitTestSourceDirectory> -->
+
+    <resources>
+      <resource>
+        <directory></directory>
+        <includes>
+          <include>plugin.jelly</include>
+          <include>plugin.properties</include>
+          <include>project.properties</include>
+          <include>project.xml</include>
+        </includes>
+      </resource>
+    </resources>
+
+  </build>
+  
+	<dependencies>
+	
+		<dependency>
+			<groupId>javassist</groupId>
+			<artifactId>javassist</artifactId>
+			<version>2.6</version>
+			<!--<version>2.5.1</version>-->
+		</dependency>
+		
+		<dependency>
+			<groupId>maven</groupId>
+			<artifactId>maven</artifactId>
+			<version>1.0-rc3</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>ant</groupId>
+			<artifactId>ant</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>osgi</groupId>
+			<artifactId>osgi-framework</artifactId>
+			<version>1.2</version>
+		</dependency>
+		
+	</dependencies>
+
+
+  <reports>
+  	<report>maven-changes-plugin</report>
+  	<report>maven-javadoc-plugin</report>
+  	<report>maven-tasklist-plugin</report>
+  </reports>
+
+ 
+</project>
+

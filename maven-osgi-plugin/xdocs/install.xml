@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<document>
+
+  <properties>
+    <title>Maven-OSGi Install</title>
+    <author email="frei@inf.ethz.ch">Andreas Frei</author>
+  </properties>
+
+  <body>
+    <section name="Download / Install Maven-OSGi Plugin">
+    
+		<p>
+		Check the <a href="changes-report.html">changes</a> page for bugfix releases.
+		</p>
+    
+		<subsection name="Manually">
+		<ul>
+        	<li>get newest version from <a href="http://wlab.ethz.ch/maven/repository/maven/plugins/">maven-osgi-plugin</a></li>
+      		<li>Copy the jar file into the maven plugins directory (e.g. maven-1.0-rc3/plugins, not the .maven/plugins).</li>
+      	</ul>    
+   		</subsection>
+    
+   	 	<subsection name="with Maven">
+<source><![CDATA[
+maven \
+	-Dmaven.repo.remote=http://www.ibiblio.org/maven,http://osgirepo.berlios.de/maven/repository \
+	-DgroupId=maven -DartifactId=maven-osgi-plugin -Dversion=0.3.2 \
+	plugin:download
+]]></source>
+    	</subsection>
+    
+    </section>
+ </body>
+</document>
