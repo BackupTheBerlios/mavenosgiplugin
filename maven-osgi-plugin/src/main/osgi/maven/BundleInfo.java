@@ -80,8 +80,7 @@ public class BundleInfo
     // Public Methods
     //--------------------------------------------------------//
     public void doExecute()
-    {
-        System.out.println("called BundleInfo.doExecute()");
+    {               
         try {
             parseJar();
         } catch (IOException e) {
@@ -282,11 +281,22 @@ public class BundleInfo
         List deps = project.getDependencies();
         for (Iterator dit = deps.iterator(); dit.hasNext();) {
             Dependency dep = (Dependency) dit.next();
-            Artifact artifact = DefaultArtifactFactory.createArtifact(dep);
-            System.out.println("import now: " + artifact.getName());
-            m_bundle.addImportArtifact(artifact);
+//            Artifact artifact = DefaultArtifactFactory.createArtifact(dep);
+//            System.out.println("import now: " + artifact.getName());
+            
+            //If this dependency wants to be inside this jarfile, we don't need
+            // to check for imports                      
+            boolean wantsToBundle = Boolean.valueOf(
+                    (String) dep.resolvedProperties().get("osgi.jar.bundle"))
+                    .booleanValue();
+            if (!wantsToBundle) {
+                  Artifact artifact = DefaultArtifactFactory.createArtifact(dep);
+                m_bundle.addImportArtifact(artifact);
+            }
+            
+//            m_bundle.addImportArtifact(artifact);
         }
-
+        
         String targetfile = bundledir + File.separatorChar + 
         	artifactId + "-"+  artifactVersion+".jar";
         System.out.println(targetfile);

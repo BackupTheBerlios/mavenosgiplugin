@@ -4,13 +4,13 @@
  */
 package osgi.maven;
 
-import java.util.Vector;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-
-import javassist.NotFoundException;
+//import java.util.Vector;
+//import java.util.jar.JarEntry;
+//import java.util.jar.JarFile;
+//import java.util.regex.Pattern;
+//import java.util.zip.ZipEntry;
+//
+//import javassist.NotFoundException;
 import junit.framework.TestCase;
 
 /**

@@ -247,12 +247,19 @@ public class Bundle
                     {
                         String refclass = (String) it.next();
 
+
+
                         // check if the class is not of a system class
                         // (cdc-minimum, foundation) and
                         // not in the same jar file
-                        //tocheckimports.add(refclass);
+                        // tocheckimports.add(refclass);
+                        // Make sure that the import is not in one of the Java
+                        // libraries, and that it is in one of the dependent
+                        // classes.. 
                         if (!BundleVerifier.Instance().getRtClasses().
-                                isRtClass(refclass))
+                                isRtClass(refclass) &&
+                             BundleVerifier.Instance().getDepsClasses().
+                             getClassImports(refclass) != null)
                         {
                         	//System.out.println(refclass);
                         	int index = refclass.lastIndexOf(".");
