@@ -57,7 +57,7 @@
         project="${pom}"/> 
   
   	<ant:echo>Deploying OBR File:</ant:echo>
-	<ant:copy file="${maven.osgi.obr.name}" todir="${maven.repo.local}/${pom.groupId}/jars" />
+	<ant:copy file="${maven.osgi.obr.name}" todir="${maven.repo.local}/${pom.groupId}/obr" />
   	
   </goal>
   
