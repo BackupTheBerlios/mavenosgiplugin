@@ -38,6 +38,7 @@ import java.util.jar.JarFile;
 import javassist.NotFoundException;
 
 import org.apache.maven.project.Dependency;
+import org.apache.maven.project.Project;
 import org.apache.maven.repository.Artifact;
 import org.apache.maven.repository.DefaultArtifactFactory;
 
@@ -71,6 +72,8 @@ public class Bundle
     private String sourceUrl;
     
     private String docUrl;
+    
+    private Project project;
     
     /**
      * bgroup, bname, bversion can also be represented as a maven artifact.
@@ -183,7 +186,7 @@ public class Bundle
     public Bundle(String repolocal, String bundledir, String group, 
             String name, String version, String apivendor,
             String vendor, String category, String updatelocation,
-            String srcurl, String docurl) throws NotFoundException
+            String srcurl, String docurl, Project project) throws NotFoundException
     {
         this(repolocal, bundledir, group, name, version);
         this.apivendor = apivendor;
@@ -192,6 +195,7 @@ public class Bundle
         this.updatelocation = updatelocation;
         this.sourceUrl = srcurl;
         this.docUrl = docurl;
+        this.project = project;
     }
 
     public void setWithPkgVersion()

@@ -315,7 +315,7 @@ public class BundleInfo
 
         m_bundle = new Bundle(repolocal, bundledir, artifactGroup, artifactId,
                 artifactVersion, apivendor, vendor, category, updatelocation,
-                srcurl, docurl);
+                srcurl, docurl, project);
 
         // check the withpkgversion flag
         String pkgversion = System.getProperty("withpkgv");
