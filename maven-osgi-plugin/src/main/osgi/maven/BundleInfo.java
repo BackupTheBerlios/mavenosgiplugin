@@ -55,6 +55,10 @@ public class BundleInfo
 
     private String artifactVersion;
 
+    private String apivendor;
+    
+    private String vendor;
+    
     private String bundledir;
 
     private Bundle m_bundle;
@@ -193,6 +197,16 @@ public class BundleInfo
         this.artifactVersion = artifactVersion;
     }
 
+    public void setApivendor(String apivendor)
+    {
+        this.apivendor = apivendor;
+    }
+    
+    public void setVendor(String vendor)
+    {
+        this.vendor = vendor;
+    }
+    
     public void setBundleDir(String bundledir)
     {
         this.bundledir = bundledir;
@@ -271,7 +285,7 @@ public class BundleInfo
     {
 
         m_bundle = new Bundle(repolocal, bundledir, artifactGroup, artifactId,
-                artifactVersion);
+                artifactVersion, apivendor, vendor);
 
         // check the withpkgversion flag
         String pkgversion = System.getProperty("withpkgv");

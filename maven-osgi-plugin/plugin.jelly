@@ -123,6 +123,8 @@
 			artifactGroup="${pom.groupId}"
 			artifactId="${pom.artifactId}"
 			artifactVersion="${pom.currentVersion}"
+			apivendor="${pom.getProperty('obr.bundle.apivendor')}"
+			vendor="${pom.organization.name}"
 			bundleDir="${maven.build.dir}"
 			repositoryLocal="${maven.repo.local}"
 			project="${pom}"
@@ -132,7 +134,7 @@
       	<!-- OSGi-Extensions related to the standard manifest -->
       	<!--==================================================-->
       	<!-- osgie.manifest.mainclass -->
-      	<j:if test="${pom.getProperty('osgie.manifest.mainclass')!=null}">
+      	<j:if test="${pom.getProperty('osgi.manifest.mainclass')!=null}">
       		<ant:attribute name = "Main-Class"      value = "${pom.getProperty('osgie.manifest.mainclass')}"/>
       	</j:if>
       	

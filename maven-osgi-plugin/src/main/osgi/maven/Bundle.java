@@ -60,6 +60,10 @@ public class Bundle
 
     private String  bversion;
 
+    private String apivendor;
+    
+    private String vendor;
+    
     /**
      * bgroup, bname, bversion can also be represented as a maven artifact.
      */
@@ -169,6 +173,15 @@ public class Bundle
         this.thirdparty = thirdparty;
     }
 
+    public Bundle(String repolocal, String bundledir, String group,
+            String name, String version, String apivendor, String vendor) 
+    throws NotFoundException
+    {
+        this(repolocal, bundledir, group, name, version);
+        this.apivendor = apivendor;
+        this.vendor = vendor;
+    }
+    
     public void setWithPkgVersion()
     {
         withpkgv = true;
@@ -359,6 +372,13 @@ public class Bundle
     	buf.append(XMLHelpers.emitTag("bundle-name", bname, 1));
     	buf.append(XMLHelpers.emitTag("bundle-group", bgroup, 1));
     	buf.append(XMLHelpers.emitMultilineTag("bundle-description", description, 1));
+    	
+    	if (apivendor == null)
+    	    buf.append(XMLHelpers.emitTag("bundle-apivendor", "", 1));
+    	else
+    	    buf.append(XMLHelpers.emitTag("bundle-apivendor", apivendor, 1));
+    	
+    	buf.append(XMLHelpers.emitTag("bundle-vendor", vendor, 1));
     	buf.append(XMLHelpers.emitTag("bundle-version", bversion, 1));    	  	    	    	
     	buf.append(XMLHelpers.emitTag("update-location", "localhost://" + repolocal, 1));
     	buf.append(XMLHelpers.emitMultilineTag("bundle-sourceurl", sourceUrl, 1));
@@ -383,7 +403,7 @@ public class Bundle
     		}    		    		
     		buf.append("\t</dependencies>\n");
     	}
-    	buf.append("</bundle>");
+    	buf.append("</bundle>\n");
     	
     	// Debug output:
 //    	System.out.println("OBR:");
