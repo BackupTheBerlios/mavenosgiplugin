@@ -388,7 +388,7 @@ public class Bundle
         buf.append(XMLHelpers.emitTag("bundle-version", bversion, 1));
 
         // ok the uuid is repition, but to be compatible with knopflerfish
-        buf.append(XMLHelpers.emitTag("bundle-uuid", bgroup + ":" + bname + ":" + bversion + ":"));
+        buf.append(XMLHelpers.emitTag("bundle-uuid", bgroup + ":" + bname + ":" + bversion + ":", 1));
 
         buf.append(XMLHelpers.emitMultilineTag("bundle-description", description, 1));
 
