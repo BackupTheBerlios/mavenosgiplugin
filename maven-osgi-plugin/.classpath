@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="src/main"/>
 	<classpathentry kind="src" path="src/test"/>
 	<classpathentry sourcepath="ORG_ECLIPSE_JDT_SOURCE_SRC/org.junit_3.8.1/junitsrc.zip" kind="var" path="JUNIT_HOME/junit.jar"/>
@@ -8,5 +7,6 @@
 	<classpathentry kind="var" path="MAVEN_REPO/ant/jars/ant-1.6.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/javassist/jars/javassist-2.6.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/maven/jars/maven-1.0.1.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/j2sdk1.5.0"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

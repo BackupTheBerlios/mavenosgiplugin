@@ -5,7 +5,8 @@
   
   <groupId>maven</groupId>
   <id>maven-osgi-plugin</id>
-  <currentVersion>0.3.3-SNAPSHOT</currentVersion>
+  <currentVersion>0.3.4-SNAPSHOT</currentVersion>
+
   
   <name>Maven OSGi Plugin</name>
   
@@ -63,6 +64,10 @@
   	
   		<contributor>
 	  	 	<name>Enrique Rodriguez</name>
+	  	</contributor>
+	  	
+	  	<contributor>
+	  	 	<name>Erwin Jansen</name>
 	  	</contributor>
 	  	 	
   	</contributors>

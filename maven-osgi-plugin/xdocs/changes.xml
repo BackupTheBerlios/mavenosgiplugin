@@ -12,6 +12,12 @@
   </properties>
   <body>
 
+    <release version="0.3.4" date="2004-12-19" description="fix classpath"> 
+      <action dev="andfrei" type="add">
+		Fix import of included packages, thanks to Erwin Jansen.
+      </action>
+    </release>
+    
     <release version="0.3.3" date="2004-12-11" description="new goals, more vm support"> 
       <action dev="andfrei" type="add">
 		A new goal osgi:deploy allows to deploy the osgi to a remote repository, 
