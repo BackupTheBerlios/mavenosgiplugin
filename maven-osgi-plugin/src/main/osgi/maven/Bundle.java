@@ -401,7 +401,7 @@ public class Bundle
         buf.append(XMLHelpers.emitTag("bundle-version", bversion, 1));
 
         // ok the uuid is repition, but to be compatible with knopflerfish
-        buf.append(XMLHelpers.emitTag("bundle-uuid", bgroup + ":" + bname + ":" + bversion + ":", 1));
+        buf.append(XMLHelpers.emitTag("bundle-uuid", bgroup + ":" + bname + ":" + bversion + ":obr", 1));
 
         buf.append(XMLHelpers.emitMultilineTag("bundle-description", description, 1));
 
@@ -463,7 +463,7 @@ public class Bundle
                 String depgroup = dep.getGroupId();
                 String depversion = dep.getVersion();
                 buf.append("\t<dependency-uuid>");
-                buf.append(depgroup + ":" + depname + ":" + depversion + ":");
+                buf.append(depgroup + ":" + depname + ":" + depversion + ":obr");
                 buf.append("</dependency-uuid>\n");
             }
         }
