@@ -15,19 +15,10 @@
     
 		<subsection name="Manually">
 		<ul>
-        	<li>get newest version from <a href="http://osgirepo.berlios.de/maven/repository/maven/plugins/">maven-osgi-plugin</a></li>
+        	<li>get newest version from <a href="http://osgirepo.berlios.de/repository/maven/jars/">maven-osgi-plugin</a></li>
       		<li>Copy the jar file into the maven plugins directory (e.g. maven-1.0-rc3/plugins, not the .maven/plugins).</li>
       	</ul>    
    		</subsection>
-    
-   	 	<subsection name="with Maven">
-<source><![CDATA[
-maven \
-	-Dmaven.repo.remote=http://www.ibiblio.org/maven,http://osgirepo.berlios.de/maven/repository \
-	-DgroupId=maven -DartifactId=maven-osgi-plugin -Dversion=0.3.5 \
-	plugin:download
-]]></source>
-    	</subsection>
     
     </section>
  </body>

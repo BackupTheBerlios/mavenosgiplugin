@@ -45,7 +45,7 @@
     	licensing is not clear about this, in case you have more information
     	about the license please inform us.
     </p>
-    
+<!--  
     <subsection name="Getting started with mavenized OSGi bundles">
     <p>
     	You are not required to set up this full infrastructure if you
@@ -116,7 +116,7 @@
     </p>
     
     </subsection>
-    	
+-->
     </section>
     
  </body>
