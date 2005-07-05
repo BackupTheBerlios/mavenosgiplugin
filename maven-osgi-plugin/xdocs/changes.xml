@@ -12,6 +12,18 @@
   </properties>
   <body>
 
+    <release version="0.3.6" date="2005-07-05" description="ActivatorBundle"> 
+      <action dev="andfrei" type="fix">
+        Fix inherit from ActivatorBundle by Alexandre Roman.
+      </action>
+    </release>
+
+    <release version="0.3.6" date="2005-07-05" description="obr,opd"> 
+      <action dev="andfrei" type="add">
+        OBR, OPD deploy
+      </action>
+    </release>
+
     <release version="0.3.5" date="2005-02-08" description="fix small issues"> 
       <action dev="andfrei" type="fix">
 		Same small bugs and enhancements.
