@@ -71,14 +71,15 @@ public class DepsClasses {
         CtClass clas;
         try
         {
+            final Class bundleActivatorClass = Class.forName("org.osgi.framework.BundleActivator");
             clas = cpool.get(clname);
 	        CtClass[] interfaces = clas.getInterfaces();
 	        for (int i = 0; i < interfaces.length; i++) {
-	            if (interfaces[i].getName().equals(
-	                    "org.osgi.framework.BundleActivator"))
+	            // deals with classes which inherit from BundleActivator
+	            if (bundleActivatorClass.isAssignableFrom(Class.forName(interfaces[i].getName())))
 	                    return true;;
 	        }
-        } catch (NotFoundException e)
+        } catch (Exception e)
         {
             return false;
         }
