@@ -5,7 +5,7 @@
   
   <groupId>maven</groupId>
   <id>maven-osgi-plugin</id>
-  <currentVersion>0.3.6-SNAPSHOT</currentVersion>
+  <currentVersion>0.3.6</currentVersion>
 
   
   <name>Maven OSGi Plugin</name>

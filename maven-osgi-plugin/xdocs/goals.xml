@@ -41,7 +41,24 @@
           <td>osgi:deploy</td>
           <td></td>
           <td>
-            Deploy an OSGi bundle to the remote repository.
+            Deploy an OSGi bundle including the OBR to the remote repository.
+          </td>
+        </tr>  
+        
+        <tr>
+          <td>obr:deploy</td>
+          <td></td>
+          <td>
+            Deploy the OBR to the remote repository.
+          </td>
+        </tr>  
+        
+        <tr>
+          <td>opd:deploy</td>
+          <td></td>
+          <td>
+            Deploy the OPD to the remote repository. The OPD file must remain
+            in the directory of the project.xml.
           </td>
         </tr>  
         

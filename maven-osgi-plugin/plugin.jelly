@@ -74,7 +74,98 @@
       type="jar"
       project="${pom}"
     />
+    
+    <attainGoal name="obr:deploy" />
+    
   </goal>
+  
+  <goal name="obr:deploy"
+    	prereqs="osgi:init"
+    	description="Deploy the OBR to the remote repository">
+
+	<j:set var="username" value='${context.getVariable("maven.username")}'/>
+
+	<j:set var="copier" value='${context.getVariable("maven.scp.executable")}'/>
+    
+      <!--
+        ||
+        || Make sure the destination directory exists.
+        ||
+      -->
+      
+      <j:set var="distributionSiteX" value="${pom.distributionSite}X"/>
+      <j:choose>
+        <j:when test="${distributionSiteX != 'X'}">
+          <j:set var="siteAddress" value="${pom.distributionSite}"/>
+          <j:set var="siteDirectory" value="${pom.distributionDirectory}"/>
+        </j:when>
+        <j:otherwise>
+          <j:set var="siteAddress" value='${context.getVariable("maven.repo.central")}'/>
+          <j:set var="siteDirectory" value='${context.getVariable("maven.repo.central.directory")}'/>
+        </j:otherwise>
+      </j:choose>
+      
+      <j:set 
+        var="resolvedDirectory" 
+        value="${siteDirectory}/${pom.groupId}/obrs"
+      />
+      
+      <j:set var="assureDirectoryCommandX" value="${assureDirectoryCommand}X"/>
+      
+      <j:set var="line" value="${maven.scp.args} ${maven.osgi.obr.name} ${username}@${siteAddress}:${resolvedDirectory}"/>
+      
+      <ant:echo>copied file to remote repo: ${line}</ant:echo>
+      
+    <ant:exec dir="." executable="${copier}">
+      <ant:arg line="${line}"/>
+    </ant:exec>
+
+  </goal>
+  
+    <goal name="opd:deploy"
+    	description="Deploy the OPD to the remote repository">
+
+	   <j:set var="maven.osgi.opd.name" 
+	      value="./${maven.final.name}.opd"/>
+
+		<j:set var="username" value='${context.getVariable("maven.username")}'/>
+
+		<j:set var="copier" value='${context.getVariable("maven.scp.executable")}'/>
+    
+      	<!--
+        ||
+        || Make sure the destination directory exists.
+        ||
+      	-->
+      
+      	<j:set var="distributionSiteX" value="${pom.distributionSite}X"/>
+      	<j:choose>
+        	<j:when test="${distributionSiteX != 'X'}">
+        		<j:set var="siteAddress" value="${pom.distributionSite}"/>
+          		<j:set var="siteDirectory" value="${pom.distributionDirectory}"/>
+        	</j:when>
+        	<j:otherwise>
+          		<j:set var="siteAddress" value='${context.getVariable("maven.repo.central")}'/>
+          		<j:set var="siteDirectory" value='${context.getVariable("maven.repo.central.directory")}'/>
+        	</j:otherwise>
+      	</j:choose>
+      
+      	<j:set 
+        	var="resolvedDirectory" 
+        	value="${siteDirectory}/${pom.groupId}/opds"
+      	/>
+      
+      	<j:set var="assureDirectoryCommandX" value="${assureDirectoryCommand}X"/>
+      
+      	<j:set var="line" value="${maven.scp.args} ${maven.osgi.opd.name} ${username}@${siteAddress}:${resolvedDirectory}"/>
+      
+      	<ant:echo>copdied file to remote repo: ${line}</ant:echo>
+      
+	    <ant:exec dir="." executable="${copier}">
+	      <ant:arg line="${line}"/>
+	    </ant:exec>
+	
+	  </goal>
   
   <!--==================================================================-->
   <!-- Builds an OSGi jar file                                          -->
