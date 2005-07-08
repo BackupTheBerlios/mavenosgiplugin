@@ -11,7 +11,7 @@
   <!--==================================================================-->
   <!-- Default goal : Builds a war file                                 -->
   <!--==================================================================-->
-  <goal name="osgi" prereqs="osgi:jar"
+  <goal name="osgi" prereqs="osgi:sign"
   	description="Build an OSGi jar file"/>
   
   <!--==================================================================-->
@@ -21,6 +21,11 @@
     <define:jellybean
       name="bundleinfo"
       className="osgi.maven.BundleInfo"
+      method="doExecute"
+    />
+    <define:jellybean
+      name="bundlesecurity"
+      className="osgi.maven.BundleSecurity"
       method="doExecute"
     />
     <define:jellybean
@@ -48,14 +53,14 @@
   <!-- Install the osgi in the local repository                         -->
   <!--==================================================================-->    
   <goal name="osgi:install"
-        prereqs="osgi:jar"
+        prereqs="osgi:sign"
         description="Install the osgi jar in the local repository">
-     
+ 
      <artifact:install
         artifact="${maven.osgi.final.name}"
         type="jar"
         project="${pom}"/> 
-  
+          
   	<ant:echo>Deploying OBR File:</ant:echo>
 	<ant:copy file="${maven.osgi.obr.name}" todir="${maven.repo.local}/${pom.groupId}/obrs" />
   	
@@ -66,7 +71,7 @@
   <!--==================================================================-->  
   <goal
     name="osgi:deploy"
-    prereqs="osgi:jar"
+    prereqs="osgi:sign"
     description="Deploy an OSGi bundle to the remote repository">
 
     <artifact:deploy
@@ -179,7 +184,24 @@
       
    <j:set var="maven.osgi.obr.name" 
       value="${maven.build.dir}/${maven.final.name}.obr"/>
-      
+
+  </goal>
+  
+  <goal name="osgi:sign" prereqs="osgi:jar" description="Sign the osgi bundle">
+  	
+  	<ant:echo>Signing OSGi jar ${maven.final.name}</ant:echo>
+  	
+  	<bundleinfo:bundlesecurity
+  		var="bs"
+  		jarName="${maven.osgi.final.name}"
+  		obrName="${maven.osgi.obr.name}"
+		digestGenAlgo="${osgi.maven.security.digestGenerationAlgorithm}"
+		provider="${osgi.maven.security.provider}"
+		keyStoreLocation="${osgi.maven.security.keystoreLocation}"
+		keyStoreAlias="${osgi.maven.security.keystoreAlias}"
+		keyPassword="${osgi.maven.security.keyPassword}"
+  	/>
+  	
   </goal>
   
   <goal name="osgi:jar" prereqs="osgi:init,java:jar" description="Build an OSGi jar file">
