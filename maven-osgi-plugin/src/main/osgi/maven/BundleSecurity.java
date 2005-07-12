@@ -129,22 +129,22 @@ public class BundleSecurity {
         
         // get the digest and encode it in base64
         byte[] digestBytes = computeDigest(digestGenAlgo, jarBytes);
-        BASE64Encoder encoder = new sun.misc.BASE64Encoder();
-        String digestEncoded = encoder.encode(digestBytes);
+        String digestEncoded = new String(Base64.encodeBase64(digestBytes));
         System.out.println("Digest: \n" + digestEncoded);
         
         // create a signature
         PrivateKey privKey = getPrivateKey();
-        String signature = encoder.encode(createSignature(privKey, digestBytes));
+        byte[] signatureBytes = createSignature(privKey, digestBytes);
+        String signatureEncoded = new String(Base64.encodeBase64(signatureBytes));
         
         // write it as an XML string
         securityInfoXML = XMLHelpers.emitTag("digestGenerationAlgorithm", digestGenAlgo);
         securityInfoXML += XMLHelpers.emitTag("keyGenerationAlgorithm", privKey.getAlgorithm());
         securityInfoXML += XMLHelpers.emitTag("digest", digestEncoded);
-        securityInfoXML += XMLHelpers.emitTag("signature", signature);
+        securityInfoXML += XMLHelpers.emitTag("signature", signatureEncoded);
 
         // TODO: Debug info
-        securityInfoXML += XMLHelpers.emitMultilineTagNL("temp-info", encoder.encode(getPublicKey().getEncoded()));
+        securityInfoXML += XMLHelpers.emitTag("temp-info", new String(Base64.encodeBase64(getPublicKey().getEncoded())));
         return securityInfoXML;
     }
     
