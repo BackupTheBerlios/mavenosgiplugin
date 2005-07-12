@@ -95,6 +95,7 @@ public class BundleSecurity {
             obrString += XMLHelpers.emitMultilineTagNL("bundle-security", securityInfo, 1);
             obrString += "</bundle>";
             obrContentBytes = obrString.getBytes();
+            obrFile.seek(0);
             obrFile.write(obrContentBytes, 0, obrContentBytes.length);
             obrFile.close();
         } catch (Exception e){
