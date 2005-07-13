@@ -14,8 +14,6 @@ import java.security.PublicKey;
 import java.security.Security;
 import java.security.Signature;
 
-import sun.misc.BASE64Encoder;
-
 /**
  * @author otmar
  */
@@ -131,17 +129,17 @@ public class BundleSecurity {
         // get the digest and encode it in base64
         byte[] digestBytes = computeDigest(digestGenAlgo, jarBytes);
         String digestEncoded = new String(Base64.encodeBase64(digestBytes));
-        System.out.println("Digest: \n" + digestEncoded);
         
         // create a signature
         PrivateKey privKey = getPrivateKey();
-        byte[] signatureBytes = createSignature(privKey, digestBytes);
+        //byte[] signatureBytes = createSignature(privKey, digestBytes);
+        byte[] signatureBytes = createSignature(privKey, jarBytes);
         String signatureEncoded = new String(Base64.encodeBase64(signatureBytes));
         
         // write it as an XML string
-        securityInfoXML = XMLHelpers.emitTag("digestGenerationAlgorithm", digestGenAlgo);
+        //securityInfoXML = XMLHelpers.emitTag("digestGenerationAlgorithm", digestGenAlgo);
         securityInfoXML += XMLHelpers.emitTag("keyGenerationAlgorithm", privKey.getAlgorithm());
-        securityInfoXML += XMLHelpers.emitTag("digest", digestEncoded);
+        //securityInfoXML += XMLHelpers.emitTag("digest", digestEncoded);
         securityInfoXML += XMLHelpers.emitTag("signature", signatureEncoded);
 
         // TODO: Debug info
