@@ -5,6 +5,7 @@ package osgi.maven;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.RandomAccessFile;
 import java.security.KeyStore;
 import java.security.MessageDigest;
@@ -13,11 +14,15 @@ import java.security.Provider;
 import java.security.PublicKey;
 import java.security.Security;
 import java.security.Signature;
+import java.security.cert.X509Certificate;
 
 /**
  * @author otmar
  */
 public class BundleSecurity {
+    
+    private static final int BUFFERSIZE = 1024;
+    private static final String certDir = "cert";
     
     private String jarName;
     private String obrName;
@@ -26,6 +31,7 @@ public class BundleSecurity {
     private String digestGenAlgo;
     private String provider;
     private String keyPassword;
+    private String repoLocation;
 
     public String getDigestGenAlgo() {
         return digestGenAlgo;
@@ -69,7 +75,12 @@ public class BundleSecurity {
     public void setProvider(String provider) {
         this.provider = provider;
     }
-    
+    public String getRepoLocation() {
+        return repoLocation;
+    }
+    public void setRepoLocation(String repoLocation) {
+        this.repoLocation = repoLocation;
+    }
     
     public void doExecute(){
         try {
@@ -121,29 +132,39 @@ public class BundleSecurity {
         }
         
         // open the JAR file and read it
-        System.out.println("Signing " + deployOSGiJar);
-        RandomAccessFile jarFile = new RandomAccessFile(deployOSGiJar, "r");
-        byte[] jarBytes = new byte[(int)jarFile.length()];
-        jarFile.read(jarBytes);
+        //RandomAccessFile jarFile = new RandomAccessFile(deployOSGiJar, "r");
+        FileInputStream jarFile = new FileInputStream(deployOSGiJar);
+        byte[] buffer = new byte[BUFFERSIZE];
         
         // get the digest and encode it in base64
-        byte[] digestBytes = computeDigest(digestGenAlgo, jarBytes);
-        String digestEncoded = new String(Base64.encodeBase64(digestBytes));
+        // byte[] digestBytes = computeDigest(digestGenAlgo, jarBytes);
+        // String digestEncoded = new String(Base64.encodeBase64(digestBytes));
         
-        // create a signature
+        // compute digest & signature
+        // MessageDigest msgDigest = MessageDigest.getInstance(digestGenAlgo);
         PrivateKey privKey = getPrivateKey();
+        Signature sig = Signature.getInstance(privKey.getAlgorithm());
+        sig.initSign(privKey);
+        while (jarFile.read(buffer) != -1){
+        //    msgDigest.update(buffer);
+            sig.update(buffer);
+        }
+        //String digestEncoded = new String(Base64.encodeBase64(msgDigest.digest()));
+        String signatureEncoded = new String(Base64.encodeBase64(sig.sign()));
+        
         //byte[] signatureBytes = createSignature(privKey, digestBytes);
-        byte[] signatureBytes = createSignature(privKey, jarBytes);
-        String signatureEncoded = new String(Base64.encodeBase64(signatureBytes));
+        //byte[] signatureBytes = createSignature(privKey, jarBytes);
+        //String signatureEncoded = new String(Base64.encodeBase64(signatureBytes));
         
         // write it as an XML string
         //securityInfoXML = XMLHelpers.emitTag("digestGenerationAlgorithm", digestGenAlgo);
-        securityInfoXML += XMLHelpers.emitTag("keyGenerationAlgorithm", privKey.getAlgorithm());
+        //securityInfoXML += XMLHelpers.emitTag("keyGenerationAlgorithm", privKey.getAlgorithm());
         //securityInfoXML += XMLHelpers.emitTag("digest", digestEncoded);
         securityInfoXML += XMLHelpers.emitTag("signature", signatureEncoded);
-
+        System.out.println("signature: " + signatureEncoded);
+        securityInfoXML += XMLHelpers.emitTag("certificate-ID", deployCertificate());
         // TODO: Debug info
-        securityInfoXML += XMLHelpers.emitTag("temp-info", new String(Base64.encodeBase64(getPublicKey().getEncoded())));
+        //securityInfoXML += XMLHelpers.emitTag("temp-info", new String(Base64.encodeBase64(getPublicKey().getEncoded())));
         return securityInfoXML;
     }
     
@@ -174,7 +195,35 @@ public class BundleSecurity {
         FileInputStream is = new FileInputStream(file);
         KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
         keystore.load(is, null);
-        
         return (PrivateKey) keystore.getKey(keyStoreAlias, (keyPassword).toCharArray());
+    }
+    
+    private String deployCertificate() throws Exception {
+        FileInputStream is = new FileInputStream(keyStoreLocation);
+        KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
+        keystore.load(is, null);
+        X509Certificate cert = (X509Certificate)keystore.getCertificate(keyStoreAlias);
+        File directory = new File(repoLocation + File.separator + certDir);
+        if (!directory.exists()){
+            directory.mkdir();
+        }
+        String certPath = repoLocation + File.separator + certDir + File.separator + cert.getSerialNumber() + ".cer";
+        File certFile = new File(certPath);
+        certFile.createNewFile();
+        FileOutputStream os = new FileOutputStream(certFile);
+        os.write(cert.getEncoded());
+        os.flush();
+        os.close();
+        return cert.getSerialNumber().toString();
+    }
+    
+    private String getCertificateString() throws Exception{
+        File file = new File(keyStoreLocation);
+        FileInputStream is = new FileInputStream(file);
+        KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
+        keystore.load(is, null);
+        X509Certificate cert = (X509Certificate)keystore.getCertificate(keyStoreAlias);
+        String base64Cert = new String(Base64.encodeBase64(cert.getEncoded()));
+        return base64Cert;
     }
 }

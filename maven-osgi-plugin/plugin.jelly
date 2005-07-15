@@ -200,6 +200,7 @@
 		keyStoreLocation="${osgi.maven.security.keystoreLocation}"
 		keyStoreAlias="${osgi.maven.security.keystoreAlias}"
 		keyPassword="${osgi.maven.security.keyPassword}"
+		repoLocation="${maven.repo.local}"
   	/>
   	
   </goal>

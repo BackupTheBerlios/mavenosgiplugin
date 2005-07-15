@@ -19,10 +19,8 @@
  */
 package osgi.maven;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collection;
@@ -324,14 +322,14 @@ public class Bundle
         StringBuffer buf = new StringBuffer();
         String description = null;
 
-        String md5;
-        if (file == null)
-        {
-            md5 = MD5.getHashString(new File(bundledir + File.separatorChar + bname + "-" + bversion + ".jar"));
-        } else
-        {
-            md5 = MD5.getHashString(file);
-        }
+//        String md5;
+//        if (file == null)
+//        {
+//            md5 = MD5.getHashString(new File(bundledir + File.separatorChar + bname + "-" + bversion + ".jar"));
+//        } else
+//        {
+//            md5 = MD5.getHashString(file);
+//        }
         Vector dependencies = new Vector();
 
         if (thirdparty || file == null)
@@ -441,7 +439,7 @@ public class Bundle
         else
             buf.append(XMLHelpers.emitTag("bundle-category", "general", 1));
         
-        buf.append(XMLHelpers.emitTag("bundle-checksum", md5, 1));
+//        buf.append(XMLHelpers.emitTag("bundle-checksum", md5, 1));
 
         for (Iterator iter = importSet.iterator(); iter.hasNext();)
         {
