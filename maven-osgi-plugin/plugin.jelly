@@ -198,6 +198,7 @@
 		digestGenAlgo="${osgi.maven.security.digestGenerationAlgorithm}"
 		provider="${osgi.maven.security.provider}"
 		keyStoreLocation="${osgi.maven.security.keystoreLocation}"
+		keyStoreType="${osgi.maven.security.keystoreType}"
 		keyStoreAlias="${osgi.maven.security.keystoreAlias}"
 		keyPassword="${osgi.maven.security.keyPassword}"
 		repoLocation="${maven.repo.local}"
