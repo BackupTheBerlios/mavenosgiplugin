@@ -61,15 +61,33 @@ public class XMLHelpers {
     }
     
     // regard new lines...
-    // WARNING: keep in mind that these two methods midfy the content!!!
+    // WARNING: keep in mind that these two methods modify the content!!!
     //  -> no problems if new lines outside of text-tags...
     protected static String emitMultilineTagNL(String tagName, String content, int level) {
         String leveller = new String();
         for (int i = 0; i < level; i++) {
     		leveller = leveller + "\t";    		
     	}
-        content = content.substring(0, content.length() - 1).replaceAll("\n", "\n" + leveller + "\t");
-        return leveller + "<" + tagName + ">\n" + leveller + "\t" + content + "\n" + leveller + "</" + tagName  + ">\n";
+        StringBuffer result = new StringBuffer();
+        int index;
+        int pos = 0;
+        while ((index = content.indexOf("\n", pos)) != -1){
+            result.append(content.substring(pos, index));
+            result.append("\n" + leveller + "\t");
+            pos = index + 1;
+        }
+        if (pos < content.length()) result.append(content.substring(pos, content.length()));
+        return leveller + "<" + tagName + ">\n" + leveller + "\t" + result.toString() + "\n" + leveller + "</" + tagName  + ">\n";
     }
-	
+    
+    protected static String insertNL(String data, int lineLength){
+        StringBuffer result = new StringBuffer(data);
+        int pos = lineLength - 1;
+        while (pos < result.length()){
+            result.insert(pos, '\n');
+            pos += lineLength;
+        }
+        return result.toString();
+    }
+
 }
