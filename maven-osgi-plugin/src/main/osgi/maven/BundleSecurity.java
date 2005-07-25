@@ -185,7 +185,8 @@ public class BundleSecurity {
         System.out.println("digest: " + digestEncoded);
         securityInfoXML += XMLHelpers.emitTag("signature", signatureEncoded);
         System.out.println("signature: " + signatureEncoded);
-        securityInfoXML += XMLHelpers.emitTag("certificate-ID", certificate.getSerialNumber().toString());
+        String encodedCert = new String(Base64.encodeBase64(certificate.getEncoded()));
+        securityInfoXML += XMLHelpers.emitTag("certificate", encodedCert);
         // TODO: Debug info
         //securityInfoXML += XMLHelpers.emitTag("temp-info", new String(Base64.encodeBase64(getPublicKey().getEncoded())));
         return securityInfoXML;
