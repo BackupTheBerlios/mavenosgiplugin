@@ -33,6 +33,7 @@ public class BundleSecurity {
     private String provider;
     private String keyPassword;
     private String repoLocation;
+    private String showPublicKey;
 
     public String getDigestGenAlgo() {
         return digestGenAlgo;
@@ -88,8 +89,14 @@ public class BundleSecurity {
     public void setRepoLocation(String repoLocation) {
         this.repoLocation = repoLocation;
     }
-    
-    public void doExecute(){
+    public String getShowPublicKey() {
+		return showPublicKey;
+	}
+	public void setShowPublicKey(String showPublicKey) {
+		this.showPublicKey = showPublicKey;
+	}
+	
+	public void doExecute(){
         try {
             
             // setting default values if not specified
@@ -172,9 +179,11 @@ public class BundleSecurity {
         String encodedCert = new String(Base64.encodeBase64(certificate.getEncoded()));
         encodedCert = XMLHelpers.insertNL(encodedCert, 60);
         securityInfoXML += XMLHelpers.emitMultilineTagNL("certificate", encodedCert);
-        String pubKey = new String(Base64.encodeBase64(certificate.getPublicKey().getEncoded()));
-        pubKey = XMLHelpers.insertNL(pubKey, 60);
-        System.out.println("Public key Base64 encoded:\n" + pubKey);
+        if (showPublicKey != null && showPublicKey.equals("true")){
+        	String pubKey = new String(Base64.encodeBase64(certificate.getPublicKey().getEncoded()));
+            pubKey = XMLHelpers.insertNL(pubKey, 60);
+            System.out.println("Public key Base64 encoded:\n" + pubKey);
+        }
         return securityInfoXML;
     }
     
