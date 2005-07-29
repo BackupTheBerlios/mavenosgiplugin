@@ -68,16 +68,17 @@ public class XMLHelpers {
         for (int i = 0; i < level; i++) {
     		leveller = leveller + "\t";    		
     	}
+        if (content.endsWith("\n")) content = content.substring(0, content.length()-1);
         StringBuffer result = new StringBuffer();
         int index;
         int pos = 0;
+        result.append(leveller + "\t");
         while ((index = content.indexOf("\n", pos)) != -1){
-            result.append(content.substring(pos, index));
-            result.append("\n" + leveller + "\t");
+            result.append(content.substring(pos, index) + "\n" + leveller + "\t");
             pos = index + 1;
         }
         if (pos < content.length()) result.append(content.substring(pos, content.length()));
-        return leveller + "<" + tagName + ">\n" + leveller + "\t" + result.toString() + "\n" + leveller + "</" + tagName  + ">\n";
+        return leveller + "<" + tagName + ">\n" + result.toString() + "\n" + leveller + "</" + tagName  + ">\n";
     }
     
     protected static String insertNL(String data, int lineLength){
