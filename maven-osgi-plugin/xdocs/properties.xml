@@ -4,6 +4,7 @@
   <properties>
     <title>Maven-OSGi Properties</title>
     <author email="frei@inf.ethz.ch">Andreas Frei</author>
+    <author email="caduffo@student.ethz.ch">Otmar Caduff</author>
   </properties>
 
   <body>
@@ -26,6 +27,80 @@
 	            the foundation class libraries.
 	          </td>
 	        </tr>
+	      	<tr>
+          	  <td>osgi.maven.security.digestGenerationAlgorithm</td>
+	          <td>Yes</td>
+	          <td></td>
+    	      <td>
+        	  	If a digest generation algorithm is given, the digest of
+        	  	the bundle is computed and emitted to the .obr file.
+        	  	This property is optional, becuase most algorithms used to sign
+        	  	compute a digest by themselves.
+        	  </td>
+          	</tr>
+          	<tr>
+          	  <td>osgi.maven.security.provider</td>
+          	  <td>Yes</td>
+          	  <td></td>
+          	  <td>
+          		The class name of the security provider to be installed and
+          		added to the already available providers. It must be a subclass
+          		of java.security.Provider. If you want to use this
+          		option, make sure that the classes are available in the classpath.
+          	  </td>
+            </tr>
+          	<tr>
+          	  <td>osgi.maven.security.keystoreLocation</td>
+          	  <td>Yes</td>
+          	  <td>{user.home}/.keystore</td>
+          	  <td>
+          		The location of the file containing the keystore information.
+          		A keystore is basically a set of certificates and keys.
+          	  </td>
+            </tr>
+            <tr>
+          	  <td>osgi.maven.security.keystoreType</td>
+          	  <td>Yes</td>
+          	  <td>
+          		The default keystore type as specified in the Java security
+          		properties file or JKS if no such property exists.
+          	  </td>
+          	  <td>
+          		The type of the keystore. Possible values would be
+          		JKS or PKCS12.
+          	  </td>
+            </tr>
+            <tr>
+          	  <td>osgi.maven.security.keystoreAlias</td>
+          	  <td>Yes</td>
+          	  <td>maven-osgi</td>
+          	  <td>
+          		The alias that identifies the certificate and private key
+          		used to sign the bundles.
+          	  </td>
+            </tr>
+            <tr>
+          	  <td>osgi.maven.security.keyPassword</td>
+          	  <td>Yes</td>
+          	  <td>osgi-pwd</td>
+          	  <td>
+          		The password needed to access the private key in the keystore.
+          		It's not recommended to add this property to a file you check
+          		in a repository. You can for example set this property when
+          		calling maven, e.g. <code>maven
+          		-Dosgi.maven.security.keyPassword={your password}</code>.
+          	  </td>
+            </tr>
+            <tr>
+          	  <td>osgi.maven.security.showPublicKey</td>
+          	  <td>Yes</td>
+          	  <td></td>
+          	  <td>
+          		If this property is set to true, a base64 encoded version of the
+          		public key is printed on the screen when a bundle is signed.
+          		Might be helpful for debugging.
+          	  </td>
+            </tr>
 	        
 	        
 	    </table>

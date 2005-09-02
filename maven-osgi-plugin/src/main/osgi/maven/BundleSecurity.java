@@ -110,9 +110,11 @@ public class BundleSecurity {
                 keyStoreType = KeyStore.getDefaultType();
             
             certificate = getCertificate();
-            
-            writeObr();
-            
+            if (certificate != null)
+            	writeObr();
+            else
+            	System.out.println("\nCould not load certificate, " +
+            			"no signature created for this bundle\n");
         } catch (Exception e){
             System.out.println("Warning! No signature created for this bundle!");
             e.printStackTrace();
@@ -198,7 +200,7 @@ public class BundleSecurity {
     private PrivateKey getPrivateKey() throws Exception{
         File file = new File(keyStoreLocation);
         FileInputStream is = new FileInputStream(file);
-        KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
+        KeyStore keystore = KeyStore.getInstance(keyStoreType);
         keystore.load(is, null);
         return (PrivateKey) keystore.getKey(keyStoreAlias, (keyPassword).toCharArray());
     }
